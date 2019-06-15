@@ -239,7 +239,7 @@ class studentplus_service {
 	-------------------DOHVATI PODATKE O MEMBERIMA--------------------
 	*/
 	//vraća polje svih članova (-1/0/1) neke ponude čiji id šaljemo
-	function get_students_in_offer_by_id(){
+	function get_students_in_offer(){
 		//varijabla mora biti postavljena u session
 		if( !isset($_SESSION['offer']) ) throw new Exception( 'get_students_in_offer_by_id :: Values are not properly set.' );
 
@@ -265,7 +265,7 @@ class studentplus_service {
 	}
 
 	//vraća polje svih  članova koji su podnijeli zahtjev (za koje još nismo odlučili što ćemo s njima)
-	function get_pending_students_in_offer_by_id(){
+	function get_pending_students_in_offer(){
 		//varijabla mora biti postavljena u session
 		if( !isset($_SESSION['offer']) ) throw new Exception( 'get_pending_students_in_offer_by_id :: Values are not properly set.' );
 
@@ -390,13 +390,13 @@ class studentplus_service {
 
 	//dodaj novu ponudu u bazu
 	function add_offer(){
-		if( !isset($_SESSION['login']) || !isset($_SESSION['new_offer_name']) || isset($_SESSION['new_offer_description']) || isset($_SESSION['location']) || isset($_SESSION['period']) ) throw new Exception( 'add_offer :: Values are not properly set.' );
+		if( !isset($_POST['login']) || !isset($_POST['new_offer_name']) || isset($_POST['new_offer_description']) || isset($_POST['location']) || isset($_POST['period']) ) throw new Exception( 'add_offer :: Values are not properly set.' );
 
-		$tvrtka = $this->get_companyname_by_oib($_SESSION['login']);
-		$ime = $_SESSION['new_offer_name']; 
-		$opis = $_SESSION['new_offer_description'];
-		$lokacija = $_SESSION['location'];
-		$razdoblje = $_SESSION['period'];
+		$tvrtka = $this->get_companyname_by_oib($_POST['login']);
+		$ime = $_POST['new_offer_name']; 
+		$opis = $_POST['new_offer_description'];
+		$lokacija = $_POST['location'];
+		$razdoblje = $_POST['period'];
 
 
 		//kreiramo novi jedinstveni id
@@ -423,17 +423,17 @@ class studentplus_service {
 	//registracija tvrtke
 	function add_company(){
 
-		if( !isset($_SESSION['new_company_oib']) || !isset($_SESSION['new_company_password']) || !isset($_SESSION['new_company_ime']) || !isset($_SESSION['new_company_email']) || !isset($_SESSION['new_company_adresa']) || !isset($_SESSION['new_company_telefon']) || !isset($_SESSION['new_company_opis']) ) 
+		if( !isset($_POST['new_company_oib']) || !isset($_POST['new_company_password']) || !isset($_POST['new_company_ime']) || !isset($_POST['new_company_email']) || !isset($_POST['new_company_adresa']) || !isset($_POST['new_company_telefon']) || !isset($_POST['new_company_opis']) ) 
 				throw new Exception( 'add_company :: Values are not properly set.' );
 
 
-		$oib = $_SESSION['new_company_oib'];
-		$password_hash = password_hash($_SESSION['new_company_password'], PASSWORD_DEFAULT);
-		$ime = $_SESSION['new_company_ime']; 
-		$email = $_SESSION['new_company_email'];
-		$adresa = $_SESSION['new_company_adresa'];
-		$broj_telefona = $_SESSION['new_company_telefon'];
-		$opis_tvrtke = $_SESSION['new_company_opis'];
+		$oib = $_POST['new_company_oib'];
+		$password_hash = password_hash($_POST['new_company_password'], PASSWORD_DEFAULT);
+		$ime = $_POST['new_company_ime']; 
+		$email = $_POST['new_company_email'];
+		$adresa = $_POST['new_company_adresa'];
+		$broj_telefona = $_POST['new_company_telefon'];
+		$opis_tvrtke = $_POST['new_company_opis'];
 
 		//provjerimo postoji li već tvrtka s takvim oib-om (ne može biti)
 		try{
@@ -455,17 +455,17 @@ class studentplus_service {
 
 	//registracija studenta
 	function add_student(){
-		if( !isset($_SESSION['new_student_username']) || !isset($_SESSION['new_student_password']) || !isset($_SESSION['new_student_ime']) || !isset($_SESSION['new_student_prezime']) || !isset($_SESSION['new_student_telefon']) || !isset($_SESSION['new_student_email']) || !isset($_SESSION['new_student_fakultet']) || !isset($_SESSION['new_student_ocjene']) || !isset($_SESSION['new_student_sati']) || !isset($_FILES['new_student_zivopis']) ) throw new Exception( 'add_student :: Values are not properly set.' );
+		if( !isset($_POST['new_student_username']) || !isset($_POST['new_student_password']) || !isset($_POST['new_student_ime']) || !isset($_POST['new_student_prezime']) || !isset($_POST['new_student_telefon']) || !isset($_POST['new_student_email']) || !isset($_POST['new_student_fakultet']) || !isset($_POST['new_student_ocjene']) || !isset($_POST['new_student_sati']) || !isset($_FILES['new_student_zivopis']) ) throw new Exception( 'add_student :: Values are not properly set.' );
 
-		$username = $_SESSION['new_student_username'];
-		$password_hash = password_hash($_SESSION['new_student_password'], PASSWORD_DEFAULT);
-		$ime = $_SESSION['new_student_ime']; 
-		$prezime = $_SESSION['new_student_prezime']; 
-		$broj_telefona = $_SESSION['new_student_telefon'];
-		$email = $_SESSION['new_student_email'];
-		$fakultet = $_SESSION['new_student_fakultet'];
-		$prosjek_ocjena = $_SESSION['new_student_ocjene'];
-		$broj_slobodnih_sati_tjedno = $_SESSION['new_student_sati'];
+		$username = $_POST['new_student_username'];
+		$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
+		$ime = $_POST['new_student_ime']; 
+		$prezime = $_POST['new_student_prezime']; 
+		$broj_telefona = $_POST['new_student_telefon'];
+		$email = $_POST['new_student_email'];
+		$fakultet = $_POST['new_student_fakultet'];
+		$prosjek_ocjena = $_POST['new_student_ocjene'];
+		$broj_slobodnih_sati_tjedno = $_POST['new_student_sati'];
 		$zivotopis = $this->upload_file(); //id nam vrati
 
 		if( $zivotopis === false ) throw new Exception( 'add_student :: File was not uploaded properly.' );
