@@ -1,13 +1,13 @@
 <?php
 
+//mozda ne treba
 class Member{
 	
-	protected $id_user, $id_ponuda, $tvrtka, $status;
+	protected $id_student, $id_offer, $status;
 
-	function __construct( $id_user, $id_ponuda, $tvrtka, $status ){
-		$this->id_user = $id_user;
-    	$this->id_ponuda = $id_ponuda;
-		$this->tvrtka = $tvrtka;
+	function __construct( $id_student, $id_offer, $status ){
+		$this->id_student = $id_student;
+    	$this->id_offer = $id_offer;
 		$this->status = $status;
 	}
 

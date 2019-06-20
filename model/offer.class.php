@@ -2,15 +2,15 @@
 
 class Offer{
 
-	protected $id, $tvrtka, $ime, $opis, $lokacija, $razdoblje;
+	protected $id, $company, $name, $description, $adress, $period;
 
-	function __construct( $id, $tvrtka, $ime, $opis, $lokacija, $razdoblje ){
+	function __construct( $id, $company, $name, $description, $adress, $period ){
 		$this->id = $id;
-    	$this->tvrtka = $tvrtka;
-		$this->ime = $ime;
-		$this->opis = $opis;
-		$this->lokacija = $lokacija;
-		$this->razdoblje = $razdoblje;
+    	$this->company = $company;
+		$this->name = $name;
+		$this->description = $description;
+		$this->adress = $adress;
+		$this->period = $period;
 	}
 
 	function __get( $prop ) { return $this->$prop; }

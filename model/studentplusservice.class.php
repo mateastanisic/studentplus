@@ -9,7 +9,7 @@ class studentplus_service {
 	function get_all_offers(){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id, oib, ime, opis, lokacija, razdoblje FROM studentplus_offers ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers ORDER BY id' );
 			$st->execute();
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
@@ -19,7 +19,7 @@ class studentplus_service {
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$name = $this->get_companyname_by_oib($row['oib']);
-			$offers[] = new Offer( $row['id'], $name, $row['ime'], $row['opis'], $row['lokacija'], $row['razdoblje'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -28,7 +28,7 @@ class studentplus_service {
 	function get_offer_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id, oib, ime, opis, lokacija, razdoblje FROM studentplus_offers WHERE id:=id ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id:=id ORDER BY id' );
 			$st->execute( 'id' => $id );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
@@ -37,7 +37,7 @@ class studentplus_service {
 		if( $row === false ) return null;
 		else{
 			$name = $this->get_companyname_by_oib($row['oib']);
-			return new Offer( $row['id'], $name, $row['ime'], $row['opis'], $row['lokacija'], $row['razdoblje'] );
+			return new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
 		} 
 	}
 
@@ -45,7 +45,7 @@ class studentplus_service {
 	function get_offers_by_oib($oib){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id, oib, ime, opis, lokacija, razdoblje FROM studentplus_offers WHERE oib:=oib ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE oib:=oib ORDER BY id' );
 			$st->execute( 'oib' => $oib );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
@@ -55,7 +55,7 @@ class studentplus_service {
 		//pronađimo ime tvrtke koja oglašava ovu ponudu
 		$name = $this->get_companyname_by_oib($oib);
 		while( $row = $st->fetch() ){
-			$offers[] = new Offer( $row['id'], $name, $row['ime'], $row['opis'], $row['lokacija'], $row['razdoblje'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -84,18 +84,18 @@ class studentplus_service {
 	}
 
 	//vraća polje svih ponuda kojima sam poslao zahtjev (bez obzira na status)
-	function get_all_my_offers_by_id($id_user){
+	function get_all_my_offers_by_id($id_student){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id_user, id_ponuda, oib, status FROM studentplus_members WHERE id_user:=id_user ORDER BY id_user' );
-			$st->execute( 'id_user' => $id_user );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student:=id_student ORDER BY id_student' );
+			$st->execute( 'id_student' => $id_student );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
 		//polje za spremanje svih ponuda
 		$offers = array();
 		while( $row = $st->fetch() ){
-			$jedna_ponuda = $this->get_offer_by_id($row['id_ponuda']);
+			$jedna_ponuda = $this->get_offer_by_id($row['id_offer']);
 			if( $jedna_ponuda === null ) continue;
 			$offers[] = $jedna_ponuda;
 		}
@@ -121,7 +121,7 @@ class studentplus_service {
 		$row = $st->fetch();
 		if( $row === false ) return null;
 		else{
-			return new Company( $row['oib'], $row['password'], $row['ime'], $row['email'], $row['adresa'], $row['broj_telefona'], $row['opis_tvrtke'] );
+			return new Company( $row['oib'], $row['password'], $row['name'], $row['email'], $row['adress'], $row['phone'], $row['description'] );
 		} 
 	}
 
@@ -130,14 +130,14 @@ class studentplus_service {
 		//probaj naći oib među tvrtkama
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT ime FROM studentplus_companies WHERE oib=:oib' );
+			$st = $db->prepare( 'SELECT name FROM studentplus_companies WHERE oib=:oib' );
 			$st->execute( array( 'oib' => $oib ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
 		$row = $st->fetch();
 		if( $row === false ) return null;
-		else return $row['ime'];
+		else return $row['name'];
 	}
 
 	//vraća ime tvrtke koja je postavila određenu ponudu
@@ -187,7 +187,7 @@ class studentplus_service {
 		$row = $st->fetch();
 		if( $row === false ) return null;
 		else{
-			return new Student( $row['id'], $row['username'], $row['password'], $row['ime'], $row['prezime'], $row['broj_telefona'], $row['email'], $row['fakultet'], $row['prosjek_ocjena'], $row['broj_slobodnih_sati_tjedno'], $row['zivotopis'] );
+			return new Student( $row['id'], $row['username'], $row['password'], $row['name'], $row['surname'], $row['email'], $row['phone'], $row['school'], $row['grades'], $row['free_time'], $row['cv'] );
 		} 
 	}
 
@@ -243,12 +243,12 @@ class studentplus_service {
 		//varijabla mora biti postavljena u session
 		if( !isset($_SESSION['offer']) ) throw new Exception( 'get_students_in_offer_by_id :: Values are not properly set.' );
 
-		$id_ponuda = $_SESSION['offer'];
+		$id_offer = $_SESSION['offer'];
 
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id_user, id_ponuda, oib, status FROM studentplus_members WHERE id_ponuda:=id_ponuda ORDER BY id_ponuda' );
-			$st->execute( 'id_ponuda' => $id_ponuda );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer:=id_offer ORDER BY id_offer' );
+			$st->execute( 'id_offer' => $id_offer );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
@@ -257,7 +257,7 @@ class studentplus_service {
 
 		while( $row = $st->fetch() ){
 			//pronađimo studenta s danim id-om
-			$student = $this->get_student_by_id($row['id_user']);
+			$student = $this->get_student_by_id($row['id_student']);
 			if( $student === null ) continue;
 			$members[] = $student;
 		}
@@ -269,12 +269,12 @@ class studentplus_service {
 		//varijabla mora biti postavljena u session
 		if( !isset($_SESSION['offer']) ) throw new Exception( 'get_pending_students_in_offer_by_id :: Values are not properly set.' );
 
-		$id_ponuda = $_SESSION['offer'];
+		$id_offer = $_SESSION['offer'];
 
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id_user, id_ponuda, oib, status FROM studentplus_members WHERE id_ponuda:=id_ponuda ORDER BY id_ponuda' );
-			$st->execute( 'id_ponuda' => $id_ponuda );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer:=id_offer ORDER BY id_offer' );
+			$st->execute( 'id_offer' => $id_offer );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
@@ -286,25 +286,25 @@ class studentplus_service {
 			if( $row['status'] !== 0 ) continue;
 
 			//pronađimo studenta s danim id-om
-			$student = $this->get_student_by_id($row['id_user']);
+			$student = $this->get_student_by_id($row['id_student']);
 			if( $student === null ) continue;
 			$members[] = $student;
 		}
 		return $pending;
 	}
 
-	//vraća status trenutno logiranog studenta u ponudi s idom $id_ponuda
+	//vraća status trenutno logiranog studenta u ponudi s idom $id_offer
 	function get_status(){
 		if( !isset($_SESSION['login']) || !isset($_SESSION['offer']) ) throw new Exception( 'get_status :: Values are not properly set.' );
 		//saznaj o kojem se studentu radi
-		$id_user = $this->get_id_by_username($_SESSION['login']);
+		$id_student = $this->get_id_by_username($_SESSION['login']);
 		//saznaj o kojoj se ponudi radi
-		$id_ponuda = $_SESSION['offer'];
+		$id_offer = $_SESSION['offer'];
 
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT status FROM studentplus_members WHERE id_user=:id_user AND id_ponuda=:id_ponuda' );
-			$st->execute( array( 'id_user' => $id_user,  'id_ponuda' => $id_ponuda ) );
+			$st = $db->prepare( 'SELECT status FROM studentplus_members WHERE id_student=:id_student AND id_offer=:id_offer' );
+			$st->execute( array( 'id_student' => $id_student,  'id_offer' => $id_offer ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
@@ -324,16 +324,16 @@ class studentplus_service {
 		if( !isset($_SESSION['login']) || !isset($_SESSION['offer']) ) throw new Exception( 'asign_student_to_offer :: Values are not properly set.' );
 
 		//saznaj o kojem se studentu radi
-		$id_user = $this->get_id_by_username($_SESSION['login']);
+		$id_student = $this->get_id_by_username($_SESSION['login']);
 		//saznaj o kojoj se ponudi radi
-		$id_ponuda = $_SESSION['offer'];
+		$id_offer = $_SESSION['offer'];
 
 
 		//pogledaj postoji li uopće taj student 
 		try{
 			$db = DB::getConnection();
 			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id' );
-			$st->execute( array( 'id' => $id_user ) );
+			$st->execute( array( 'id' => $id_student ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 		if( $st->rowCount() !== 1 ) throw new Exception( 'asign_student_to_offer :: Student with the given id does not exist.' );
@@ -342,7 +342,7 @@ class studentplus_service {
 		try{
 			$db = DB::getConnection();
 			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id=:id' );
-			$st->execute( array( 'id' => $id_ponuda ) );
+			$st->execute( array( 'id' => $id_offer ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 		if( $st->rowCount() !== 1 ) throw new Exception( 'asign_student_to_offer :: Offer with the given id does not exist.' );
@@ -350,31 +350,31 @@ class studentplus_service {
 
 
 		//dodajmo studenta u member
-		$tvrtka = $this->get_companyname_by_offerid($id_ponuda);
+		$tvrtka = $this->get_companyname_by_offerid($id_offer);
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'INSERT INTO studentplus_members(id_user, id_ponuda, tvrtka, status) VALUES (:id_user, :id_ponuda, :tvrtka, :status)' );
-			$st->execute( array( 'id_user' => $id_user, 'id_ponuda' => $id_ponuda, 'tvrtka' => $tvrtka, 'status' => 0 ) );
+			$st = $db->prepare( 'INSERT INTO studentplus_members(id_student, id_offer, status) VALUES (:id_student, :id_offer, :status)' );
+			$st->execute( array( 'id_student' => $id_student, 'id_offer' => $id_offer, 'status' => 0 ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 
 	}
 
 	//obradi prihvaćanje/odbijanje studenta
-	function change_status( $status, $id_user ){
+	function change_status( $status, $id_student ){
 		//moramo actually mjenjati nešto
 		if( $status !== -1 || $status !== 1 ) throw new Exception( 'change_status :: Status value is not valid.' );
 
 		//varijable moraju biti postavljene
-		if( !isset($_SESSION['offer']) || !isset($id_user) ) throw new Exception( 'change_status :: Values are not properly set.' );
+		if( !isset($_SESSION['offer']) || !isset($id_student) ) throw new Exception( 'change_status :: Values are not properly set.' );
 		
-		$id_ponuda = $_SESSION['offer'];
+		$id_offer = $_SESSION['offer'];
 
 		//provjeri postoji li takav member
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_user=:id_user AND id_ponuda=:id_ponuda' );
-			$st->execute( array( 'id_user' => $id_user,  'id_ponuda' => $id_ponuda ) );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student=:id_student AND id_offer=:id_offer' );
+			$st->execute( array( 'id_student' => $id_student,  'id_offer' => $id_offer ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Member with the given id in the given Offer does not exist.' );
@@ -382,40 +382,41 @@ class studentplus_service {
 		//update db
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'UPDATE studentplus_members SET status=:status WHERE id_user=:id_user AND id_ponuda=:id_ponuda' );
-			$st->execute( array( 'status' => $status, 'id_user' => $id_user,  'id_ponuda' => $id_ponuda ) );
+			$st = $db->prepare( 'UPDATE studentplus_members SET status=:status WHERE id_student=:id_student AND id_offer=:id_offer' );
+			$st->execute( array( 'status' => $status, 'id_student' => $id_student,  'id_offer' => $id_offer ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() );
 	}
 
 	//dodaj novu ponudu u bazu
 	function add_offer(){
-		if( !isset($_POST['login']) || !isset($_POST['new_offer_name']) || isset($_POST['new_offer_description']) || isset($_POST['location']) || isset($_POST['period']) ) throw new Exception( 'add_offer :: Values are not properly set.' );
+		if( !isset($_SESSION['login']) || !isset($_POST['new_offer_name']) || isset($_POST['new_offer_description']) || isset($_POST['new_offer_adress']) || isset($_POST['new_offer_period']) ) throw new Exception( 'add_offer :: Values are not properly set.' );
 
-		$tvrtka = $this->get_companyname_by_oib($_POST['login']);
-		$ime = $_POST['new_offer_name']; 
-		$opis = $_POST['new_offer_description'];
-		$lokacija = $_POST['location'];
-		$razdoblje = $_POST['period'];
+		$company = $_SESSION['login'];
+		$name = $_POST['new_offer_name']; 
+		$description = $_POST['new_offer_description'];
+		$adress = $_POST['new_offer_adress'];
+		$period = $_POST['new_offer_period'];
 
 
+		//id nam ne treba jer je auto_increment
 		//kreiramo novi jedinstveni id
-		$id = 1;
-		try{
-			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id FROM studentplus_offers' );
-			$st->execute( );
-		}
-		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() );
+		// $id = 1;
+		// try{
+		// 	$db = DB::getConnection();
+		// 	$st = $db->prepare( 'SELECT id FROM studentplus_offers' );
+		// 	$st->execute( );
+		// }
+		// catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() );
 
-		while( $row = $st->fetch() ) $id++;
+		// while( $row = $st->fetch() ) $id++;
 
 
 		//dodajmo ponudu u studentplus_offers
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'INSERT INTO studentplus_offers(id, tvrtka, ime, opis, lokacija, razdoblje) VALUES (:id, :tvrtka, :ime, :opis, :lokacija, :razdoblje)' );
-			$st->execute( array( 'id' => $id, 'tvrtka' => $tvrtka, 'ime' => $ime, 'opis' => $opis, 'lokacija' => $lokacija, 'razdoblje' => $razdoblje ) );
+			$st = $db->prepare( 'INSERT INTO studentplus_offers(oib, name, description, adress, period) VALUES (:oib, :name, :description, :adress, :period)' );
+			$st->execute( array( 'oib' => $company, 'name' => $name, 'description' => $description, 'adress' => $adress, 'period' => $period ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 	}
@@ -423,17 +424,17 @@ class studentplus_service {
 	//registracija tvrtke
 	function add_company(){
 
-		if( !isset($_POST['new_company_oib']) || !isset($_POST['new_company_password']) || !isset($_POST['new_company_ime']) || !isset($_POST['new_company_email']) || !isset($_POST['new_company_adresa']) || !isset($_POST['new_company_telefon']) || !isset($_POST['new_company_opis']) ) 
+		if( !isset($_POST['new_company_oib']) || !isset($_POST['new_company_password']) || !isset($_POST['new_company_name']) || !isset($_POST['new_company_email']) || !isset($_POST['new_company_adress']) || !isset($_POST['new_company_phone']) || !isset($_POST['new_company_description']) ) 
 				throw new Exception( 'add_company :: Values are not properly set.' );
 
 
 		$oib = $_POST['new_company_oib'];
 		$password_hash = password_hash($_POST['new_company_password'], PASSWORD_DEFAULT);
-		$ime = $_POST['new_company_ime']; 
+		$name = $_POST['new_company_name']; 
 		$email = $_POST['new_company_email'];
-		$adresa = $_POST['new_company_adresa'];
-		$broj_telefona = $_POST['new_company_telefon'];
-		$opis_tvrtke = $_POST['new_company_opis'];
+		$adress = $_POST['new_company_adress'];
+		$phone = $_POST['new_company_phone'];
+		$description = $_POST['new_company_description'];
 
 		//provjerimo postoji li već tvrtka s takvim oib-om (ne može biti)
 		try{
@@ -447,26 +448,26 @@ class studentplus_service {
 		//registracija tvrtke
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'INSERT INTO studentplus_companies(oib, password, ime, email, adresa, broj_telefona, opis_tvrtke ) VALUES (:oib, :password, :ime, :email, :adresa, :broj_telefona, :opis_tvrtke)' );
-			$st->execute( array( 'oib' => $oib, 'password' => $password_hash, 'ime' => $ime, 'email' => $email, 'adresa' => $adresa, 'broj_telefona' => $broj_telefona, 'opis_tvrtke' => $opis_tvrtke) );
+			$st = $db->prepare( 'INSERT INTO studentplus_companies(oib, password, name, email, adress, phone, description ) VALUES (:oib, :password, :name, :email, :adress, :phone, :description)' );
+			$st->execute( array( 'oib' => $oib, 'password' => $password_hash, 'name' => $name, 'email' => $email, 'adress' => $adress, 'phone' => $phone, 'description' => $description) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 	}
 
 	//registracija studenta
 	function add_student(){
-		if( !isset($_POST['new_student_username']) || !isset($_POST['new_student_password']) || !isset($_POST['new_student_ime']) || !isset($_POST['new_student_prezime']) || !isset($_POST['new_student_telefon']) || !isset($_POST['new_student_email']) || !isset($_POST['new_student_fakultet']) || !isset($_POST['new_student_ocjene']) || !isset($_POST['new_student_sati']) || !isset($_FILES['new_student_zivopis']) ) throw new Exception( 'add_student :: Values are not properly set.' );
+		if( !isset($_POST['new_student_username']) || !isset($_POST['new_student_password']) || !isset($_POST['new_student_name']) || !isset($_POST['new_student_surname']) || !isset($_POST['new_student_phone']) || !isset($_POST['new_student_email']) || !isset($_POST['new_student_school']) || !isset($_POST['new_student_grades']) || !isset($_POST['new_student_free_time']) || !isset($_FILES['new_student_cv']) ) throw new Exception( 'add_student :: Values are not properly set.' );
 
 		$username = $_POST['new_student_username'];
 		$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
-		$ime = $_POST['new_student_ime']; 
-		$prezime = $_POST['new_student_prezime']; 
-		$broj_telefona = $_POST['new_student_telefon'];
+		$name = $_POST['new_student_name']; 
+		$surname = $_POST['new_student_surname']; 
 		$email = $_POST['new_student_email'];
-		$fakultet = $_POST['new_student_fakultet'];
-		$prosjek_ocjena = $_POST['new_student_ocjene'];
-		$broj_slobodnih_sati_tjedno = $_POST['new_student_sati'];
-		$zivotopis = $this->upload_file(); //id nam vrati
+		$phone = $_POST['new_student_phone'];
+		$school = $_POST['new_student_school'];
+		$grades = $_POST['new_student_grades'];
+		$free_time = $_POST['new_student_free_time'];
+		$cv = $this->upload_file(); //id nam vrati
 
 		if( $zivotopis === false ) throw new Exception( 'add_student :: File was not uploaded properly.' );
 
@@ -481,22 +482,23 @@ class studentplus_service {
 		if( $st->fetch() !== false ) throw new Exception( 'add_student :: Username already exist.' );
 
 
+		//ne treba nam jer je auto increment
 		//kreiramo novi jedinstveni id
-		$id = 1;
-		try{
-			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id FROM studentplus_students' );
-			$st->execute( );
-		}
-		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() );
-		while( $row = $st->fetch() ) $id++;
+		// $id = 1;
+		// try{
+		// 	$db = DB::getConnection();
+		// 	$st = $db->prepare( 'SELECT id FROM studentplus_students' );
+		// 	$st->execute( );
+		// }
+		// catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() );
+		// while( $row = $st->fetch() ) $id++;
 
 
 		//registriramo usera
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'INSERT INTO studentplus_students(id, username, password, ime, prezime, broj_telefona, email, fakultet, prosjek_ocjena, broj_slobodnih_sati_tjedno, zivotopis) VALUES (:id, :username, :password, :ime, :prezime, :broj_telefona, :email, :fakultet, :prosjek_ocjena, :broj_slobodnih_sati_tjedno, :zivotopis)' );
-			$st->execute( array( 'id' => $id, 'username' => $username, 'password' => $password_hash, 'ime' => $ime, 'prezime' => $prezime, 'broj_telefona' => $broj_telefona, 'email' => $email, 'fakultet' => $fakultet, 'prosjek_ocjena' => $prosjek_ocjena, 'broj_slobodnih_sati_tjedno' => $broj_slobodnih_sati_tjedno, 'zivotopis' => $zivotopis ) );
+			$st = $db->prepare( 'INSERT INTO studentplus_students(username, password, name, surname, email, phone, school, grades, free_time, cv) VALUES (:username, :password, :name, :surname, :email, :phone, :school, :grades, :free_time, :cv)' );
+			$st->execute( array('username' => $username, 'password' => $password_hash, 'name' => $name, 'surname' => $surname, 'email' => $email, 'phone' => $phone, 'school' => $school, 'grades' => $grades, 'free_time' => $free_time, 'cv' => $cv ) );
 		}
 		catch( PDOException $e ) exit( 'PDO error ' . $e->getMessage() ); 
 	}
@@ -509,12 +511,12 @@ class studentplus_service {
 	*/
 	//dodaj file u bazu
 	function upload_file(){
-		$filename = $_FILES['new_student_zivopis']['name'];
+		$filename = $_FILES['new_student_cv']['name'];
 		$destination = 'uploads/' . $filename;
 		$extension = pathinfo( $filename, PATHINFO_EXTENSION );
 
-		$file = $_FILES['new_student_zivopis']['tmp_name'];
-		$size = $_FILES['new_student_zivopis']['size'];
+		$file = $_FILES['new_student_cv']['tmp_name'];
+		$size = $_FILES['new_student_cv']['size'];
 
 		//kreiramo novi jedinstveni id
 		$id = 1;
@@ -529,7 +531,7 @@ class studentplus_service {
 
 		//upload
 	    if(!in_array($extension, ['zip', 'pdf', 'docx'])) echo "You file extension must be .zip, .pdf or .docx";
-	    elseif ($_FILES['new_student_zivopis']['size'] > 1000000) echo "File too large!"; //ne više od 1mb
+	    elseif ($_FILES['new_student_cv']['size'] > 1000000) echo "File too large!"; //ne više od 1mb
 	    else{
 	        // move the uploaded (temporary) file to the specified destination
 	        if (move_uploaded_file($file, $destination)) {

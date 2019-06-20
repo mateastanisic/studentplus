@@ -2,19 +2,19 @@
 
 class Student{
 	
-	protected $id, $username, $password, $ime, $prezime, $broj_telefona, $email, $fakultet, $prosjek_ocjena, $broj_slobodnih_sati_tjedno, $zivotopis;
+	protected $id, $username, $password, $name, $surname, $phone, $email, $school, $grades, $free_time, $cv;
 
-	function __construct( $id, $username, $password, $ime, $prezime, $broj_telefona, $email, $fakultet, $prosjek_ocjena, $broj_slobodnih_sati_tjedno, $zivotopis ){
+	function __construct( $id, $username, $password, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv ){
 		$this->id = $id;
     	$this->username = $username;
-		$this->ime = $ime;
-		$this->prezime = $prezime;
-		$this->broj_telefona = $broj_telefona;
+		$this->name = $name;
+		$this->surname = $surname;
+		$this->phone = $phone;
 		$this->email = $email;
-    	$this->fakultet = $fakultet;
-    	$this->prosjek_ocjena = $prosjek_ocjena;
-		$this->broj_slobodnih_sati_tjedno = $broj_slobodnih_sati_tjedno;
-    	$this->zivotopis = $zivotopis;
+    	$this->school = $school;
+    	$this->grades = $grades;
+		$this->free_time = $free_time;
+    	$this->cv = $cv;
 	}
 
 	function __get( $prop ) { return $this->$prop; }
