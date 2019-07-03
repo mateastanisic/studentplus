@@ -37,7 +37,5 @@ if (isset($_SESSION['login'])) {
 		<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/logout">
 		<button id="logout" type="submit" name="logout">Log out</button>
 	</form>
-	}
-
-
-}
+	<?php }
+} ?>

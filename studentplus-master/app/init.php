@@ -12,6 +12,10 @@ require_once __SITE_PATH . '/app/' . 'router.class.php';
 // Učitaj definiciju templatea.
 require_once __SITE_PATH . '/app/' . 'template.class.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 // Automatsko učitavanja klasa iz modela kad se pozove new.
 function __autoload( $class_name )
@@ -23,6 +27,7 @@ function __autoload( $class_name )
 
 	if( file_exists($file) === false )
 	{
+		echo "Evo ga!";
 	    return false;
 	}
 	require_once ($file);
