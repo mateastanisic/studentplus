@@ -9,19 +9,19 @@
 		<table id="table_profil">
 		<caption>Profil studenta: </caption>
 
-			<tr id="student_ <?php echo $i; ?>" >
+			<tr >
 				<?php 
-				echo 'Ime: ', $student->name; 
-				echo 'Prezime: ', $student->surname;
-				echo 'Fakultet: ', $student->school;
-				echo 'Broj mobitela:', $student->phone;
-				echo 'E-mail: ', $student->email;
-				echo 'Ocjene: ', $student->grades;
-				echo 'Slobodno vrijeme: ', $student->free_time;
+				echo 'Ime: ', $student_in_offer->name, "<br>"; 
+				echo 'Prezime: ', $student_in_offer->surname, "<br>";
+				echo 'Fakultet: ', $student_in_offer->school, "<br>";
+				echo 'Broj mobitela:', $student_in_offer->phone, "<br>";
+				echo 'E-mail: ', $student_in_offer->email, "<br>";
+				echo 'Ocjene: ', $student_in_offer->grades, "<br>";
+				echo 'Slobodno vrijeme: ', $student_in_offer->free_time, "<br>";
 				?>
 
-				<button type="submit" name="button" value="accept">Prihvati <?php echo $student->name ?> </button><br>
-				<button type="submit" name="button" value="reject">Odjebi <?php echo $student->name ?> </button><br>
+				<button type="submit" name="button" value="accept">Prihvati <?php echo $student_in_offer->name ?> </button><br>
+				<button type="submit" name="button" value="reject">Odjebi <?php echo $student_in_offer->name ?> </button><br>
 
 			</tr>
 					

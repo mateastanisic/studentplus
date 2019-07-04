@@ -15,7 +15,6 @@ class studentplus_service {
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ) ; } 
 
 		//polje za spremanje svih ponuda
-		$offers = array();
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$name = $this->get_companyname_by_oib($row['oib']);
@@ -281,6 +280,12 @@ class studentplus_service {
 
 	//vraća polje svih  članova koji su podnijeli zahtjev (za koje još nismo odlučili što ćemo s njima)
 	function get_pending_students_in_offer($id_offer){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 		//polje za spremanje svih ponuda
 		$pending = array();
 
@@ -299,6 +304,12 @@ class studentplus_service {
 	//vraća polje svih  članova koji su podnijeli zahtjev (i koje je tvrtka prihvatila)
 	function get_accepted_students_in_offer($id_offer){
 		//polje za spremanje svih ponuda
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
 		$accepted = array();
 
 		while( $row = $st->fetch() ){
@@ -317,6 +328,12 @@ class studentplus_service {
 	//vraća polje svih  članova koji su podnijeli zahtjev (i koje je tvrtka odbila)
 	function get_rejected_students_in_offer($id_offer){
 		//polje za spremanje svih ponuda
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 		$rejected = array();
 
 		while( $row = $st->fetch() ){
@@ -365,14 +382,15 @@ class studentplus_service {
 			$st = $db->prepare( 'INSERT INTO studentplus_members(id_student, id_offer, status) VALUES (:id_student, :id_offer, :status)' );
 			$st->execute( array( 'id_student' => $id_student, 'id_offer' => $id_offer, 'status' => 0 ) );
 		}
-		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); 
+		}
 
 	}
 
 	//obradi prihvaćanje/odbijanje studenta
 	function change_status( $status, $id_student, $id_offer ){
 		//moramo actually mjenjati nešto
-		if( $status !== -1 || $status !== 1 ) throw new Exception( 'change_status :: Status value is not valid.' );
+		if( $status !== -1 && $status !== 1 ) throw new Exception( 'change_status :: Status value is not valid.' );
 
 		//provjeri postoji li takav member
 		try{
@@ -415,7 +433,7 @@ class studentplus_service {
 	}
 
 	//registracija studenta
-	function add_student($username, $password_hash, $name, $surname, $email, $adress, $phone, $school, $grades, $free_time, $cv ){
+	function add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv ){
 		if( $cv === false ) throw new Exception( 'add_student :: File was not uploaded properly.' );
 
 		//registriramo usera
@@ -436,7 +454,7 @@ class studentplus_service {
 	//dodaj file u bazu
 	function upload_file(){
 		$filename = $_FILES['new_student_cv']['name'];
-		$description = 'uploads/' . $filename;
+		$destination = __DIR__.'/uploads/' . $filename;
 		$extension = pathinfo( $filename, PATHINFO_EXTENSION );
 
 		$file = $_FILES['new_student_cv']['tmp_name'];
@@ -454,11 +472,11 @@ class studentplus_service {
 			
 
 		//upload
-	    if(!in_array($extension, ['zip', 'pdf', 'docx'])) echo "You file extension must be .zip, .pdf or .docx";
+	    if(!in_array($extension, ['zip', 'pdf', 'docx', 'txt'])) echo "Your file extension must be .zip,.txt, .pdf or .docx";
 	    elseif ($_FILES['new_student_cv']['size'] > 1000000) echo "File too large!"; //ne više od 1mb
 	    else{
 	        // move the uploaded (temporary) file to the specified destination
-	        if (move_uploaded_file($file, $destination)) {
+	        if (move_uploaded_file($file, $destination) ) {
 	            try{
 					$db = DB::getConnection();
 					$st = $db->prepare( 'INSERT INTO studentplus_files (id, name, size) VALUES (:id, :name, :size)' );
@@ -469,7 +487,12 @@ class studentplus_service {
 				}
 				catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	        } 
-	        else echo "Failed to upload file.";
+	        else {
+	        	echo "Failed to upload file.";
+	        	echo "filename " . $filename;
+	        	echo " extension" . $extension;
+	        	echo $_FILES['new_student_cv']['error'];
+	        }
 	        return false;
 	    }
 	}

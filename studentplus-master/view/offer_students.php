@@ -8,17 +8,21 @@
 	<div id="div_studenti">
 		<table id="table_studenti">
 		<!-- Tu bih voljela staviti ime ponude, ne znam jel mogu dohvatiti tu -->
-		<caption>Studenti prijavljeni za praksu 'ime': </caption>
-		<?php foreach($members as $i=>$student) { ?>
+		<caption>Studenti prijavljeni za praksu <?php echo $offer->name ?>: </caption><br>
+		<?php foreach($students_in_offer as $i=>$student) { ?>
 
 					<tr id="student_ <?php echo $i; ?>" >
 						<?php 
-						echo 'Ime: ', $student->name; 
-						echo 'Prezime: ', $student->surname;
-						echo 'Fakultet: ', $student->school;
+						echo 'Ime: ', $student->name, "<br>"; 
+						echo 'Prezime: ', $student->surname, "<br>";
+						echo 'Fakultet: ', $student->school, "<br>";
 						?>
 
-						<button type="submit" name="button" value="student_in_offer_<?php echo $student->id ?>">Pogledaj profil studenta <?php echo $student->name ?> </button><br>
+						<button type="submit" name="button" value="student_in_offer_<?php echo $student->id ?>">Pogledaj profil studenta <?php echo $student->name ?> </button><br><br>
+
+						<button type="submit" name="button" value="accept_<?php echo $student->id ?>">Prihvati <?php echo $student->name ?> </button><br>
+
+						<button type="submit" name="button" value="reject_<?php echo $student->id ?>">Odjebi <?php echo $student->name ?> </button><br>
 
 					</tr>
 					

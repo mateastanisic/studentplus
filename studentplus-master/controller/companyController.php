@@ -25,6 +25,10 @@ class CompanyController extends BaseController{
 		session_unset(); 
 		session_destroy();
 
+		$spp = new studentplus_service();
+		$offers = $spp->get_all_offers();
+		$this->registry->template->offers = $offers;
+
 		$this->registry->template->title = 'Dashboard!';
 		$this->registry->template->show('dashboard_index');
 	}
@@ -39,6 +43,7 @@ class CompanyController extends BaseController{
 			//SANITIZACIJA?????
 
 			//provjeri je li oib u bazi
+			echo "oib je set";
 			if( $spp->get_company_by_oib($_POST['oib']) === null ){
 				echo "Company with oib ". $_POST['oib'] ."  is not registred.";
 
@@ -46,15 +51,17 @@ class CompanyController extends BaseController{
 				$this->registry->template->show( 'dashboard_index' );
 				exit();
 			}
-
-			//dohvati lozinku tog studenta
+			//dohvati lozinku te tvrtke
 			$pass = $spp->get_password_by_oib( $_POST['oib'] );
 
-			if(isset( $_POST['password'] )){
+			//bio je password, promijenila u pass
+			if(isset( $_POST['pass'] )){
 				if( password_verify($_POST['pass'], $pass) ){
 					//lozinka je dobra
-					session_start();
-
+					if (!isset($_SESSION)) {
+						session_start();
+					}
+					echo "dobar je password";
 					//zapamti ulogiranog korisnika
 					$_SESSION['login'] = $_POST['oib'];
 					$noone_logged = false;
@@ -66,7 +73,7 @@ class CompanyController extends BaseController{
 					exit();
 				}
 				else{
-					echo "Login failed."
+					echo "Login failed.";
 					header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 					exit();
 				} 
@@ -77,7 +84,9 @@ class CompanyController extends BaseController{
 
 	//obradi register
 	public function check_register(){
+
 		if( isset($_POST['new_company_oib']) && isset($_POST['new_company_password']) && isset($_POST['new_company_name']) && isset($_POST['new_company_email']) && isset($_POST['new_company_adress']) && isset($_POST['new_company_phone']) && isset($_POST['new_company_description']) ){
+
 
 			$oib = $_POST['new_company_oib'];
 			$password_hash = password_hash($_POST['new_company_password'], PASSWORD_DEFAULT);
@@ -98,10 +107,12 @@ class CompanyController extends BaseController{
 			$spp->add_company($oib, $password_hash, $name, $email, $adress, $phone, $description );
 
 			//kao da je ulogiran
-			session_start();
+			if (!isset($_SESSION)) {
+				session_start();
+			}
 
 			//zapamti ulogiranog korisnika
-			$_SESSION['login'] = $_POST['oib'];
+			$_SESSION['login'] = $_POST['new_company_oib'];
 			$noone_logged = false;
 			$who_dis = 'company';
 			$_SESSION['who'] = 'company';
@@ -116,6 +127,9 @@ class CompanyController extends BaseController{
 
 	//provjerava na koje smo dugme stisnuli
 	public function check_button_choice(){
+
+		echo substr($_POST['button'], 0, 7);
+
 		if(isset($_POST['logout'])){
 			$this->logout();
 			exit();
@@ -124,6 +138,10 @@ class CompanyController extends BaseController{
 			if($_POST['button'] === 'dashboard'){
 				//uništi $_SESSION['offer']
 				unset($_SESSION['offer']);
+
+				$spp = new studentplus_service();
+				$offers = $spp->get_all_offers();
+				$this->registry->template->offers = $offers;
 
 				//vrati se na naslovnicu
 				$this->registry->template->title = 'Company Dashboard!';
@@ -146,35 +164,31 @@ class CompanyController extends BaseController{
 				$this->registry->template->show( 'new_offer' );
 				exit();
 			}
-			if( substr($_POST['button'], 0, 17 ) === 'students_in_offer_' ){
+			if( substr($_POST['button'], 0, 18 ) === 'students_in_offer_' ){
 				//stisnuli smo na neki button da želimo vidjeti sve studente koji su se prijavili na tu ponudu
 				$this->show_students();
 
 			}
-			if( substr($_POST['button'], 0, 16 ) === 'student_in_offer_' ){
+			if( substr($_POST['button'], 0, 17 ) === 'student_in_offer_' ){
 				//stisnuli smo na neki button da želimo vidjeti profil studenta s nekim id-om
 				$this->show_profil();
 
 			}
-			if( $_POST['button'] === 'accept' ){
+			if( substr($_POST['button'], 0, 7) === 'accept_'){
 				$spp = new studentplus_service();
 
-				if( !isser($_SESSION['student']) || !isser($_SESSION['offer'])  ){
-					echo 'Not all variables set!';
-					$this->all_offers();
-				} 
-				$spp->change_status( 1, $_SESSION['student'], $_SESSION['offer'] );
+				$student_id = substr($_POST['button'], 7);
+
+				$spp->change_status( 1, $student_id, $_SESSION['offer'] );
 				$this->show_students();
 			}
 			//butoooono?
-			if( $_POST['odbiji'] === 'reject'){
+			if( substr($_POST['button'], 0, 7) === 'reject_'){
 				$spp = new studentplus_service();
 
-				if( !isser($_SESSION['student']) || !isser($_SESSION['offer'])  ){
-					echo 'Not all variables set!';
-					$this->all_offers();
-				} 
-				$spp->change_status( -1, $_SESSION['student'], $_SESSION['offer'] );
+				$student_id = substr($_POST['button'], 7);
+ 
+				$spp->change_status( -1, $student_id, $_SESSION['offer'] );
 				$this->show_students();
 			}
 		}
@@ -210,8 +224,8 @@ class CompanyController extends BaseController{
 
 		$offers = $spp->get_all_offers();
 		$this->registry->template->offers = $offers;
-		unset($_SESSION['offer']);
-		$company_logged = $spp->get_company_by_oib($_SESSION['login']); //sa ovim u viewu saznajemo je li student ili tvrtka
+		//unset($_SESSION['offer']);
+		//$company_logged = $spp->get_company_by_oib($_SESSION['login']); //sa ovim u viewu saznajemo je li student ili tvrtka
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Company Dashboard!';
@@ -250,8 +264,13 @@ class CompanyController extends BaseController{
 			$spp = new studentplus_service();
 			$spp->add_offer($company, $name, $description, $adress, $period);
 
+			//ne kuzim zasto je ovaj offer tu
+			/*
 			$offer = $spp->get_offers_by_name($_POST['new_offer_name']);
+			echo $offer->name;
+
 			$_SESSION['offer'] = $offer->id;
+			*/
 
 			$this->all_offers();
 			exit();
@@ -262,22 +281,27 @@ class CompanyController extends BaseController{
 
 	//svi studenti koji su se prijavili na neku ponudu
 	public function show_students(){
-		if( !isset($_SESSION['offer']) ){
-			$extract_offerid = substr($_POST['button'], 18); //npr students_in_offer_1 - vrati nam natrag 1
 
-			$spp = new studentplus_service();
+		$extract_offerid = $_SESSION['offer']; //npr students_in_offer_1 - vrati nam natrag 1
+
+		$spp = new studentplus_service();
 			//provjeri postoji li ta ponuda
-			if( $spp->get_offer_by_id($extract_offerid) === null ){
-				echo 'Id not valid.';
-				$this->all_offers();
-				exit();
-			}
-			//spremi o kojoj ponudi se radi
-			$_SESSION['offer'] = $extract_offerid;
+		if( $spp->get_offer_by_id($extract_offerid) === null ){
+			echo 'Id not valid.';
+			echo substr($_POST['button'], 18);
+			echo $_POST['button'];
+			$this->all_offers();
+			exit();
 		}
+
+		$_SESSION['offer'] = $extract_offerid;
 		unset($_SESSION['student']);
 
-		$students_in_offer = $spp->get_students_in_offer_by_id($_SESSION['offer']);
+		$students_in_offer = $spp->get_students_in_offer_by_id($extract_offerid);
+		$this->registry->template->students_in_offer = $students_in_offer;
+
+		$offer = $spp->get_offer_by_id($extract_offerid);
+		$this->registry->template->offer = $offer;
 
 		$this->registry->template->title = 'Offer Students!';
 		$this->registry->template->show('offer_students');
@@ -296,11 +320,9 @@ class CompanyController extends BaseController{
 			exit();
 		}
 
-		//spremi o kojem studentu se radi
-		$_SESSION['student'] = $extract_studentid;
 
-		
 		$student_in_offer = $spp->get_student_by_id($extract_studentid);
+		$this->registry->template->student_in_offer = $student_in_offer;
 
 		$this->registry->template->title = 'Student Profile!';
 		$this->registry->template->show('student_profil'); 

@@ -27,6 +27,10 @@ class StudentController extends BaseController{
 		session_unset(); 
 		session_destroy();
 
+		$spp = new studentplus_service();
+		$offers = $spp->get_all_offers();
+		$this->registry->template->offers = $offers;
+
 		$this->registry->template->title = 'Dashboard!';
 		$this->registry->template->show( 'dashboard_index' );
 	}
@@ -52,12 +56,14 @@ class StudentController extends BaseController{
 			//dohvati lozinku tog studenta
 			$pass = $spp->get_password_by_username( $_POST['username'] );
 
-			echo "Nakon dohvacanja lozinke", "<br>";
 
 			if(isset( $_POST['pass'] )){
 				if( password_verify($_POST['pass'], $pass) ){
 					//lozinka je dobra
-					session_start();
+					
+					if (!isset($_SESSION)) {
+						session_start();
+					}
 
 					//zapamti ulogiranog korisnika
 					$_SESSION['login'] = $_POST['username'];
@@ -82,10 +88,10 @@ class StudentController extends BaseController{
 	//obradi registraciju
 	public function check_register(){
 
-		echo "Daj mi bilosta, usao samo u check register", "<br>";
-		//echo $_POST["new_student_username"];
-		//echo isset($_POST['new_student_username']);
-		//if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK )
+		echo "Daj mi bilosta, usao samo u student check register", "<br>";
+		echo $_POST["new_student_username"];
+		echo isset($_POST['new_student_username']);
+		//f( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK )
 
 		if( isset($_POST['new_student_username']) )
 		{
@@ -105,11 +111,11 @@ class StudentController extends BaseController{
 
 			echo "Nakon upload file";
 
-			if( !$cv ){
-				echo 'Registration failed. File not uploaded properly!';
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
-				exit();
-			}
+			//if( !$cv ){
+			//	echo 'Registration failed. File not uploaded properly!';
+			//	header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+			//	exit();
+			//}
 
 			if( $spp->get_id_by_username($username) !== null ){
 				echo 'Registration failed. Username already exists!';
@@ -121,10 +127,12 @@ class StudentController extends BaseController{
 			echo "Dodao je studenta!!!";
 
 			//kao da je ulogiran
-			session_start();
+			if (!isset($_SESSION)) {
+				session_start();
+			}
 
 			//zapamti ulogiranog korisnika
-			$_SESSION['login'] = $_POST['username'];
+			$_SESSION['login'] = $_POST['new_student_username'];
 			$noone_logged = false;
 			$who_dis = 'student';
 			$_SESSION['who'] = 'student';
@@ -144,6 +152,7 @@ class StudentController extends BaseController{
 		$offers = $spp->get_all_offers();
 		$this->registry->template->offers = $offers;
 		unset($_SESSION['offer']);
+
 		$student = $_SESSION['login']; //sa ovim u viewu saznajemo je li student ili tvrtka
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
@@ -154,11 +163,14 @@ class StudentController extends BaseController{
 
 	//koji button je stisnuo
 	public function check_button_choice(){
+
+
 		if(isset($_POST['logout'])){
 			$this->logout();
 			exit();
 		}
 		if(isset($_POST['button'])){
+
 			if($_POST['button'] === 'dashboard'){
 				//uništi $_SESSION['offer']
 				unset($_SESSION['offer']);
@@ -176,7 +188,9 @@ class StudentController extends BaseController{
 				$this->my_applications();
 				exit();
 			}
-			if( substr($_POST['button'], 0, 20 ) === 'application_in_offer_' ){
+			if( substr($_POST['button'], 0, 21 ) === 'application_in_offer_' ){
+
+
 				$spp = new studentplus_service();
 
 				$extract_offerid = substr($_POST['button'], 21);//npr application_in_offer_1 - vrati nam natrag 1
@@ -213,18 +227,20 @@ class StudentController extends BaseController{
 		$spp = new studentplus_service();
 		
 		//netko se igra sa asessionom
-		if( !isset($_SESSION['offer']) ){
+		/*if( !isset($_SESSION['offer']) ){
 			echo 'Something is wrong!';
 			header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
-		}
-		$id_offer = $_SESSION['offer'];
+		}*/
+
+		//ne kuzim id kojeg offera?
+		//$id_offer = $_SESSION['offer'];
 
 		//u bazi ne postoji takva ponuda
-		if( $spp->get_offer_by_id($id_offer) === null ){
+		/*if( $spp->get_offer_by_id($id_offer) === null ){
 			echo 'Id not valid.';
 			$this->all_offers();
 			exit();
-		}
+		}*/
 
 		//dohvati podatke o prijavama
 		$waiting = $spp->get_pending_students_in_offer($id_offer);

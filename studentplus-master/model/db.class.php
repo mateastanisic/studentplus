@@ -14,7 +14,11 @@ class DB
 	    	{
 	    		//podatke o studentima, tvrtkama, prijavama i ponudama ćemo spremiti na rp2 serveru u bazu podataka 'stanisic'
 	    		//ovdje "otvaramo" tu bazu
+
 		    	DB::$db = new PDO( "mysql:host=rp2.studenti.math.hr;dbname=stanisic;charset=utf8", 'student', 'pass.mysql' );
+
+	    		//DB::$db = new PDO( "mysql:host=db4free.net;dbname=studentplus;charset=utf8", 'stanisic', 'studentplus123' );
+		    	
 		    	DB::$db-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		    }
 		    catch( PDOException $e ) { exit( 'PDO Error: ' . $e->getMessage() ); }

@@ -24,7 +24,7 @@
 	<div id="log_company">
 		OIB: <input type="text" name="oib" />
 		Password: <input type="Password" name="pass" />
-		<button type="submit" name="posalji">Register</button>
+		<button type="submit" name="posalji">Log in</button>
 	</div>
 	
 

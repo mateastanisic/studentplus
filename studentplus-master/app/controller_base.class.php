@@ -13,6 +13,8 @@ abstract class BaseController
 
 	// Svaki kontroller mora imati barem funkciju index.
 	abstract function index();
+
+	public $komentar="nisam se mijenjao";
 }
 
 ?>

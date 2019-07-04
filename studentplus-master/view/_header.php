@@ -19,6 +19,8 @@ if(!isset($_SESSION['login']) && !isset($_SESSION['checked'])) {
 		<button id="register" type="submit" name="register">Register!</button>
 	</form> 
 
+	<br><br>
+
 <?php }
 
 //ako je netko logiran, ponudi logout
@@ -31,5 +33,6 @@ if (isset($_SESSION['login'])) { ?>
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/logout">
 		<button id="logout" type="submit" name="logout">Log out tvrtka</button>
 	</form>
+	<br><br>
 
 <?php } ?>

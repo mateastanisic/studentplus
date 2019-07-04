@@ -4,7 +4,7 @@
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/search_results">
 	<div id="div_search">
 		<input type="text" name="search" />
-		<button type="submit">Traži</button>
+		<button type="submit">Traži</button><br><br>
 	</div>
 </form>
 
@@ -12,30 +12,31 @@
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
 
-	<button type="submit" name="button" value="applications">Moje prijave</button>
+	<br>
+	<button type="submit" name="button" value="applications">Moje prijave</button><br><br>
 
 	<div id="div_prikaz_ponuda">
+		<br>
 
-		<?php if ($student !== null) {
-			echo "<table>";
-			foreach($offers as $i=>$ponuda) { ?>
+		<table>
 
-				<tr id="red_ <?php echo $i; ?>" >
-					<?php 
-					echo 'Praksa: ', $ponuda->name; 
-					echo 'Tvrtka: ', $ponuda->company;
-					echo 'Opis prakse: ', $ponuda->description;
-					echo 'Adresa: ', $ponuda->adress;
-					echo 'Period rada: ', $ponuda->period;
-					?>
+		<?php foreach($offers as $i=>$ponuda) { ?>
 
-					<!-- Klikom na ovaj gumb se student prijavljuje za praksu -->
-					<button type="submit" id="prijava_<?php echo $i; ?>" name="button" value="application_in_offer_<?php echo $ponuda->id ?>">Prijavi se!</button>
-				</tr>
-				
-			<?php }
-			echo "</table>";
-		} ?>
+			<tr id="red_ <?php echo $i; ?>" >
+				<?php 
+				echo 'Praksa: ', $ponuda->name, '<br>'; 
+				echo 'Tvrtka: ', $ponuda->company, '<br>';
+				echo 'Opis prakse: ', $ponuda->description, '<br>';
+				echo 'Adresa: ', $ponuda->adress, '<br>';
+				echo 'Period rada: ', $ponuda->period, '<br>';
+				?>
+
+				<!-- Klikom na ovaj gumb se student prijavljuje za praksu -->
+				<button type="submit" id="prijava_<?php echo $i; ?>" name="button" value="application_in_offer_<?php echo $ponuda->id ?>">Prijavi se!</button><br><br>
+			</tr>
+			
+		</table>
+		<?php } ?>
 
 	</div>
 
