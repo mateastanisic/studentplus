@@ -8,6 +8,8 @@
 	</div>
 </form>
 
+<h>Prikaz ponuda studenta</h><br>
+
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
 
 	<button type="submit" name="button" value="applications">Moje prijave</button>

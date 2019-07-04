@@ -1,11 +1,14 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_register_type" enctype="multipart/form-data">
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_register_type">
 
 	<p>Želim se registrirati kao: </p>
 
-	<input type="radio" name="s_ili_c" value="student" id="student">Student</input>
-	<input type="radio" name="s_ili_c" value="company" id="company">Tvrtka</input>
+	<input type="radio" name="odabir" value="student" id="student">Student</input>
+	<input type="radio" name="odabir" value="company" id="company">Tvrtka</input>
+</form>
+
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_register" enctype="multipart/form-data">
 
 	<div id="reg_student">
 		Username: <input type="text" name="new_student_username" /><br>
@@ -21,6 +24,9 @@
 
 		<button type="submit">Registriraj se!</button><br><br>
 	</div>
+</form>
+
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_register">
 																																																																																																																																																																																																																						
 	<div id="reg_company">
 		OIB: <input type="text" name="new_company_oib" /><br>
@@ -44,10 +50,10 @@
 
 $("document").ready(function() {
 
-	$("#reg_student").hide();
+	//$("#reg_student").hide();
 	$("#reg_company").hide();
 
-	$('input:radio[name="postage"]').change( function() {
+	$('input:radio[name="odabir"]').change( function() {
 		if( document.getElementById("student").checked() ) {
 			$("#reg_company").hide();
 			$("#reg_student").show();

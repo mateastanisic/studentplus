@@ -19,7 +19,7 @@ class studentplus_service {
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$name = $this->get_companyname_by_oib($row['oib']);
-			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -28,7 +28,7 @@ class studentplus_service {
 	function get_offer_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id:=id ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id=:id ORDER BY id' );
 			$st->execute( array('id' => $id ));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -37,7 +37,7 @@ class studentplus_service {
 		if( $row === false ) return null;
 		else{
 			$name = $this->get_companyname_by_oib($row['oib']);
-			return new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			return new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		} 
 	}
 
@@ -45,7 +45,7 @@ class studentplus_service {
 	function get_offers_by_oib($oib){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE oib:=oib ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE oib=:oib ORDER BY id' );
 			$st->execute( array('oib' => $oib ));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -55,7 +55,7 @@ class studentplus_service {
 		//pronađimo ime tvrtke koja oglašava ovu ponudu
 		$name = $this->get_companyname_by_oib($oib);
 		while( $row = $st->fetch() ){
-			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -88,7 +88,7 @@ class studentplus_service {
 	function get_offers_by_name($name){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE name:=name ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE name=:name ORDER BY id' );
 			$st->execute( array( 'name' => $name ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -98,7 +98,7 @@ class studentplus_service {
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$company = $this->get_companyname_by_oib($row['oib']);
-			$offers[] = new Offer( $row['id'], $company, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $company, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -107,7 +107,7 @@ class studentplus_service {
 	function get_all_my_offers_by_id($id_student){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student:=id_student ORDER BY id_student' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student=:id_student ORDER BY id_student' );
 			$st->execute( array( 'id_student' => $id_student ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -131,7 +131,7 @@ class studentplus_service {
 	function get_company_by_oib($oib){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_companies WHERE oib:=oib ORDER BY oib' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_companies WHERE oib=:oib ORDER BY oib' );
 			$st->execute( array( 'oib' => $oib ) );
 		}
 		catch( PDOException $e ) { 
@@ -164,7 +164,7 @@ class studentplus_service {
 	function get_companyname_by_offerid($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT oib FROM studentplus_offers WHERE id:=id' );
+			$st = $db->prepare( 'SELECT oib FROM studentplus_offers WHERE id=:id' );
 			$st->execute( array( 'id' => $id ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -197,7 +197,7 @@ class studentplus_service {
 	function get_student_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id:=id ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id ORDER BY id' );
 			$st->execute( array('id' => $id ) );
 		}
 		catch( PDOException $e ) { 
@@ -215,7 +215,7 @@ class studentplus_service {
 	function get_username_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT username FROM studentplus_students WHERE id:=id' );
+			$st = $db->prepare( 'SELECT username FROM studentplus_students WHERE id=:id' );
 			$st->execute( array( 'id' => $id ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -229,7 +229,7 @@ class studentplus_service {
 	function get_id_by_username($username){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id FROM studentplus_students WHERE username:=username' );
+			$st = $db->prepare( 'SELECT id FROM studentplus_students WHERE username=:username' );
 			$st->execute( array( 'username' => $username ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -262,7 +262,7 @@ class studentplus_service {
 	function get_students_in_offer_by_id($id_offer){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer:=id_offer ORDER BY id_offer' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
 			$st->execute( array( 'id_offer' => $id_offer ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -436,7 +436,7 @@ class studentplus_service {
 	//dodaj file u bazu
 	function upload_file(){
 		$filename = $_FILES['new_student_cv']['name'];
-		$destination = 'uploads/' . $filename;
+		$description = 'uploads/' . $filename;
 		$extension = pathinfo( $filename, PATHINFO_EXTENSION );
 
 		$file = $_FILES['new_student_cv']['tmp_name'];

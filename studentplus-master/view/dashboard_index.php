@@ -1,5 +1,6 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
+<!--<h>Prikaz ponuda nelogiranog korisnika</h><br>-->
 
 <div id="div_prikaz_ponuda">
 
@@ -9,11 +10,11 @@
 
 			<tr id="red_ <?php echo $i; ?>" >
 				<?php 
-				echo 'Praksa: ', $ponuda->name; 
-				echo 'Tvrtka: ', $ponuda->company;
-				echo 'Opis prakse: ', $ponuda->description;
-				echo 'Adresa: ', $ponuda->adress;
-				echo 'Period rada: ', $ponuda->period;
+				echo 'Praksa: ', $ponuda->name, '<br>'; 
+				echo 'Tvrtka: ', $ponuda->company, '<br>';
+				echo 'Opis prakse: ', $ponuda->description, '<br>';
+				echo 'Adresa: ', $ponuda->adress, '<br>';
+				echo 'Period rada: ', $ponuda->period, '<br><br>';
 				?>
 			</tr>
 			

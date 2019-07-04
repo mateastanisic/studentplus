@@ -23,11 +23,15 @@ function __autoload( $class_name )
 	// Imena datoteke od klasa će biti napisana malim slovima.
 	// Npr. za klasu User će biti spremljeno u user.class.php
 	$filename = strtolower($class_name) . '.class.php';
-	$file = __SITE_PATH . '/model/' . $filename;
+	$file = __SITE_PATH .'/model/' . $filename;
+	
+	/*echo "Usli smo u file: ";
+	echo $file;
+	echo '<br>';*/
 
 	if( file_exists($file) === false )
 	{
-		echo "Evo ga!";
+		echo "Jel ovo? init";
 	    return false;
 	}
 	require_once ($file);

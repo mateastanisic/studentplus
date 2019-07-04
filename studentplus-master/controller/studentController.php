@@ -2,6 +2,8 @@
 
 class StudentController extends BaseController{
 
+	public function index() {}
+
 	//obradi logout
 	public function logout(){
 		//kontroler za provođenje logout-a
@@ -19,6 +21,8 @@ class StudentController extends BaseController{
 		unset($_POST['cv']);
 		unset($student);
 		$noone_logged = true;
+		$who_dis = 'nitko';
+		$_SESSION['who'] = 'nitko';
 
 		session_unset(); 
 		session_destroy();
@@ -37,7 +41,7 @@ class StudentController extends BaseController{
 			//SANITIZACIJA?????
 
 			//provjeri je li username u bazi
-			if( $spp->get_student_by_id($_POST['username']) === null ){
+			if( $spp->get_id_by_username($_POST['username']) === null ){
 				echo "Student with username". $_POST['username'] ." is not registred.";
 
 				$this->registry->template->title = 'Dashboard!';
@@ -48,7 +52,9 @@ class StudentController extends BaseController{
 			//dohvati lozinku tog studenta
 			$pass = $spp->get_password_by_username( $_POST['username'] );
 
-			if(isset( $_POST['password'] )){
+			echo "Nakon dohvacanja lozinke", "<br>";
+
+			if(isset( $_POST['pass'] )){
 				if( password_verify($_POST['pass'], $pass) ){
 					//lozinka je dobra
 					session_start();
@@ -56,13 +62,15 @@ class StudentController extends BaseController{
 					//zapamti ulogiranog korisnika
 					$_SESSION['login'] = $_POST['username'];
 					$noone_logged = false;
+					$who_dis = 'student';
+					$_SESSION['who'] = 'student';
 
 					//odi prikupi info o svim ponudama
 					$this->all_offers();
 					exit();
 				}
 				else{
-					echo "Login failed."
+					echo "Login failed.";
 					header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 					exit();
 				} 
@@ -72,8 +80,15 @@ class StudentController extends BaseController{
 
 
 	//obradi registraciju
-	public function check_registration(){
-		if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK ){
+	public function check_register(){
+
+		echo "Daj mi bilosta, usao samo u check register", "<br>";
+		//echo $_POST["new_student_username"];
+		//echo isset($_POST['new_student_username']);
+		//if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK )
+
+		if( isset($_POST['new_student_username']) )
+		{
 
 			$username = $_POST['new_student_username'];
 			$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
@@ -87,19 +102,23 @@ class StudentController extends BaseController{
 		
 			$spp = new studentplus_service();
 			$cv = $spp->upload_file(); //id nam vrati
+
+			echo "Nakon upload file";
+
 			if( !$cv ){
 				echo 'Registration failed. File not uploaded properly!';
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 				exit();
 			}
 
-			if( $spp->get_student_by_username($username) !== null ){
+			if( $spp->get_id_by_username($username) !== null ){
 				echo 'Registration failed. Username already exists!';
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 				exit();
 			}
 
-			$spp->add_student($username, $password_hash, $name, $surname, $email, $adress, $phone, $school, $grades, $free_time, $cv );
+			$spp->add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv );
+			echo "Dodao je studenta!!!";
 
 			//kao da je ulogiran
 			session_start();
@@ -107,6 +126,8 @@ class StudentController extends BaseController{
 			//zapamti ulogiranog korisnika
 			$_SESSION['login'] = $_POST['username'];
 			$noone_logged = false;
+			$who_dis = 'student';
+			$_SESSION['who'] = 'student';
 
 			//odi prikupi info o svim ponudama
 			$this->all_offers();

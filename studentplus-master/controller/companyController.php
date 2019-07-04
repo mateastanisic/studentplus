@@ -2,6 +2,8 @@
 
 class CompanyController extends BaseController{
 
+	public function index() {}
+
 	//obradi logout
 	public function logout(){
 		//kontroler za provođenje logout-a
@@ -17,6 +19,8 @@ class CompanyController extends BaseController{
 		unset($_POST['description']);
 		unset($company);
 		$noone_logged = true;
+		$who_dis = 'nitko';
+		$_SESSION['who'] = 'nitko';
 
 		session_unset(); 
 		session_destroy();
@@ -54,6 +58,8 @@ class CompanyController extends BaseController{
 					//zapamti ulogiranog korisnika
 					$_SESSION['login'] = $_POST['oib'];
 					$noone_logged = false;
+					$who_dis = 'company';
+					$_SESSION['who'] = 'company';
 
 					//odi prikupi info o svim ponudama
 					$this->all_offers();
@@ -97,6 +103,8 @@ class CompanyController extends BaseController{
 			//zapamti ulogiranog korisnika
 			$_SESSION['login'] = $_POST['oib'];
 			$noone_logged = false;
+			$who_dis = 'company';
+			$_SESSION['who'] = 'company';
 
 			//odi prikupi info o svim ponudama
 			$this->all_offers();
@@ -169,30 +177,30 @@ class CompanyController extends BaseController{
 				$spp->change_status( -1, $_SESSION['student'], $_SESSION['offer'] );
 				$this->show_students();
 			}
-			if( isset($_GET['file_id']) ){
-				//downloadanje zivotopisa
-				$id = $_GET['file_id'];
-
-			    $spp = new studentplus_service();
-			    $result = $spp->get_file_by_id($id);
-			    $file = mysqli_fetch_assoc($result);
-
-			    $filepath = 'uploads/' . $file['name'];
-
-			    if (file_exists($filepath)) {
-			        header('Content-Description: File Transfer');
-			        header('Content-Type: application/octet-stream');
-			        header('Content-Disposition: attachment; filename=' . basename($filepath));
-			        header('Expires: 0');
-			        header('Cache-Control: must-revalidate');
-			        header('Pragma: public');
-			        header('Content-Length: ' . filesize('uploads/' . $file['name']));
-			        readfile('uploads/' . $file['name']);
-			        exit;
-			    }
-			}
-
 		}
+		if( isset($_GET['file_id']) ){
+			//downloadanje zivotopisa
+			$id = $_GET['file_id'];
+
+		    $spp = new studentplus_service();
+		    $result = $spp->get_file_by_id($id);
+		    $file = mysqli_fetch_assoc($result);
+
+		    $filepath = 'uploads/' . $file['name'];
+
+			if (file_exists($filepath)) {
+		        header('Content-Description: File Transfer');
+		        header('Content-Type: application/octet-stream');
+		        header('Content-Disposition: attachment; filename=' . basename($filepath));
+		        header('Expires: 0');
+		        header('Cache-Control: must-revalidate');
+		        header('Pragma: public');
+		        header('Content-Length: ' . filesize('uploads/' . $file['name']));
+		        readfile('uploads/' . $file['name']);
+		        exit;
+		    }
+		}
+
 	}
 
 

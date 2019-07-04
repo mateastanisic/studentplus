@@ -8,6 +8,8 @@
 	</div>
 </form>
 
+<h>Prikaz ponuda tvrtke</h><br>
+
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
 
 	<button type="submit" name="button" value="ours">Moje ponude</button><br>
