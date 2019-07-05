@@ -15,11 +15,10 @@ class studentplus_service {
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ) ; } 
 
 		//polje za spremanje svih ponuda
-		$offers = array();
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$name = $this->get_companyname_by_oib($row['oib']);
-			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -28,7 +27,7 @@ class studentplus_service {
 	function get_offer_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id:=id ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE id=:id ORDER BY id' );
 			$st->execute( array('id' => $id ));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -37,7 +36,7 @@ class studentplus_service {
 		if( $row === false ) return null;
 		else{
 			$name = $this->get_companyname_by_oib($row['oib']);
-			return new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			return new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		} 
 	}
 
@@ -45,7 +44,7 @@ class studentplus_service {
 	function get_offers_by_oib($oib){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE oib:=oib ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE oib=:oib ORDER BY id' );
 			$st->execute( array('oib' => $oib ));
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -55,7 +54,7 @@ class studentplus_service {
 		//pronađimo ime tvrtke koja oglašava ovu ponudu
 		$name = $this->get_companyname_by_oib($oib);
 		while( $row = $st->fetch() ){
-			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $name, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
@@ -88,7 +87,7 @@ class studentplus_service {
 	function get_offers_by_name($name){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE name:=name ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_offers WHERE name=:name ORDER BY id' );
 			$st->execute( array( 'name' => $name ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -98,16 +97,16 @@ class studentplus_service {
 		while( $row = $st->fetch() ){
 			//pronađimo ime tvrtke koja oglašava ovu ponudu
 			$company = $this->get_companyname_by_oib($row['oib']);
-			$offers[] = new Offer( $row['id'], $company, $row['name'], $row['destination'], $row['adress'], $row['period'] );
+			$offers[] = new Offer( $row['id'], $company, $row['name'], $row['description'], $row['adress'], $row['period'] );
 		}
 		return $offers;
 	}
 
 	//vraća polje svih ponuda kojima sam poslao zahtjev (bez obzira na status)
-	function get_all_my_offers_by_id($id_student){
+	function get_accepted_offers_by_id($id_student){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student:=id_student ORDER BY id_student' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student=:id_student ORDER BY id_student' );
 			$st->execute( array( 'id_student' => $id_student ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -115,12 +114,59 @@ class studentplus_service {
 		//polje za spremanje svih ponuda
 		$offers = array();
 		while( $row = $st->fetch() ){
+
+			if ($row['status'] !== '1') continue;
+
 			$jedna_ponuda = $this->get_offer_by_id($row['id_offer']);
 			if( $jedna_ponuda === null ) continue;
 			$offers[] = $jedna_ponuda;
 		}
 		return $offers;
 	}	
+
+		//vraća polje svih ponuda kojima sam poslao zahtjev (bez obzira na status)
+	function get_pending_offers_by_id($id_student){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student=:id_student ORDER BY id_student' );
+			$st->execute( array( 'id_student' => $id_student ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		//polje za spremanje svih ponuda
+		$offers = array();
+		while( $row = $st->fetch() ){
+
+			if ($row['status'] !== '0') continue;
+
+			$jedna_ponuda = $this->get_offer_by_id($row['id_offer']);
+			if( $jedna_ponuda === null ) continue;
+			$offers[] = $jedna_ponuda;
+		}
+		return $offers;
+	}
+
+		//vraća polje svih ponuda kojima sam poslao zahtjev (bez obzira na status)
+	function get_rejected_offers_by_id($id_student){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_student=:id_student ORDER BY id_student' );
+			$st->execute( array( 'id_student' => $id_student ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		//polje za spremanje svih ponuda
+		$offers = array();
+		while( $row = $st->fetch() ){
+
+			if ($row['status'] !== '-1') continue;
+
+			$jedna_ponuda = $this->get_offer_by_id($row['id_offer']);
+			if( $jedna_ponuda === null ) continue;
+			$offers[] = $jedna_ponuda;
+		}
+		return $offers;
+	}
 
 
 
@@ -131,7 +177,7 @@ class studentplus_service {
 	function get_company_by_oib($oib){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_companies WHERE oib:=oib ORDER BY oib' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_companies WHERE oib=:oib ORDER BY oib' );
 			$st->execute( array( 'oib' => $oib ) );
 		}
 		catch( PDOException $e ) { 
@@ -164,7 +210,7 @@ class studentplus_service {
 	function get_companyname_by_offerid($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT oib FROM studentplus_offers WHERE id:=id' );
+			$st = $db->prepare( 'SELECT oib FROM studentplus_offers WHERE id=:id' );
 			$st->execute( array( 'id' => $id ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -197,7 +243,7 @@ class studentplus_service {
 	function get_student_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id:=id ORDER BY id' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id ORDER BY id' );
 			$st->execute( array('id' => $id ) );
 		}
 		catch( PDOException $e ) { 
@@ -215,7 +261,7 @@ class studentplus_service {
 	function get_username_by_id($id){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT username FROM studentplus_students WHERE id:=id' );
+			$st = $db->prepare( 'SELECT username FROM studentplus_students WHERE id=:id' );
 			$st->execute( array( 'id' => $id ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -229,7 +275,7 @@ class studentplus_service {
 	function get_id_by_username($username){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT id FROM studentplus_students WHERE username:=username' );
+			$st = $db->prepare( 'SELECT id FROM studentplus_students WHERE username=:username' );
 			$st->execute( array( 'username' => $username ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -262,7 +308,7 @@ class studentplus_service {
 	function get_students_in_offer_by_id($id_offer){
 		try{
 			$db = DB::getConnection();
-			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer:=id_offer ORDER BY id_offer' );
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
 			$st->execute( array( 'id_offer' => $id_offer ) );
 		}
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
@@ -281,12 +327,18 @@ class studentplus_service {
 
 	//vraća polje svih  članova koji su podnijeli zahtjev (za koje još nismo odlučili što ćemo s njima)
 	function get_pending_students_in_offer($id_offer){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 		//polje za spremanje svih ponuda
 		$pending = array();
 
 		while( $row = $st->fetch() ){
 			//ako nije pending preskoči
-			if( $row['status'] !== 0 ) continue;
+			if( $row['status'] !== '0' ) continue;
 
 			//pronađimo studenta s danim id-om
 			$student = $this->get_student_by_id($row['id_student']);
@@ -299,11 +351,17 @@ class studentplus_service {
 	//vraća polje svih  članova koji su podnijeli zahtjev (i koje je tvrtka prihvatila)
 	function get_accepted_students_in_offer($id_offer){
 		//polje za spremanje svih ponuda
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
 		$accepted = array();
 
 		while( $row = $st->fetch() ){
 			//ako nije accepted preskoči
-			if( $row['status'] !== 1 ) continue;
+			if( $row['status'] !== '1' ) continue;
 
 			//pronađimo studenta s danim id-om
 			$student = $this->get_student_by_id($row['id_student']);
@@ -317,11 +375,17 @@ class studentplus_service {
 	//vraća polje svih  članova koji su podnijeli zahtjev (i koje je tvrtka odbila)
 	function get_rejected_students_in_offer($id_offer){
 		//polje za spremanje svih ponuda
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer ORDER BY id_offer' );
+			$st->execute( array( 'id_offer' => $id_offer ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 		$rejected = array();
 
 		while( $row = $st->fetch() ){
 			//ako nije rejected preskoči
-			if( $row['status'] !== -1 ) continue;
+			if( $row['status'] !== '-1' ) continue;
 
 			//pronađimo studenta s danim id-om
 			$student = $this->get_student_by_id($row['id_student']);
@@ -363,16 +427,17 @@ class studentplus_service {
 		try{
 			$db = DB::getConnection();
 			$st = $db->prepare( 'INSERT INTO studentplus_members(id_student, id_offer, status) VALUES (:id_student, :id_offer, :status)' );
-			$st->execute( array( 'id_student' => $id_student, 'id_offer' => $id_offer, 'status' => 0 ) );
+			$st->execute( array( 'id_student' => $id_student, 'id_offer' => $id_offer, 'status' => '0' ) );
 		}
-		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); 
+		}
 
 	}
 
 	//obradi prihvaćanje/odbijanje studenta
 	function change_status( $status, $id_student, $id_offer ){
 		//moramo actually mjenjati nešto
-		if( $status !== -1 || $status !== 1 ) throw new Exception( 'change_status :: Status value is not valid.' );
+		if( $status !== -1 && $status !== 1 ) throw new Exception( 'change_status :: Status value is not valid.' );
 
 		//provjeri postoji li takav member
 		try{
@@ -415,7 +480,7 @@ class studentplus_service {
 	}
 
 	//registracija studenta
-	function add_student($username, $password_hash, $name, $surname, $email, $adress, $phone, $school, $grades, $free_time, $cv ){
+	function add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv ){
 		if( $cv === false ) throw new Exception( 'add_student :: File was not uploaded properly.' );
 
 		//registriramo usera
@@ -436,7 +501,7 @@ class studentplus_service {
 	//dodaj file u bazu
 	function upload_file(){
 		$filename = $_FILES['new_student_cv']['name'];
-		$destination = 'uploads/' . $filename;
+		$destination = __DIR__.'/uploads/' . $filename;
 		$extension = pathinfo( $filename, PATHINFO_EXTENSION );
 
 		$file = $_FILES['new_student_cv']['tmp_name'];
@@ -454,11 +519,11 @@ class studentplus_service {
 			
 
 		//upload
-	    if(!in_array($extension, ['zip', 'pdf', 'docx'])) echo "You file extension must be .zip, .pdf or .docx";
+	    if(!in_array($extension, ['zip', 'pdf', 'docx', 'txt'])) echo "Your file extension must be .zip,.txt, .pdf or .docx";
 	    elseif ($_FILES['new_student_cv']['size'] > 1000000) echo "File too large!"; //ne više od 1mb
 	    else{
 	        // move the uploaded (temporary) file to the specified destination
-	        if (move_uploaded_file($file, $destination)) {
+	        if (move_uploaded_file($file, $destination) ) {
 	            try{
 					$db = DB::getConnection();
 					$st = $db->prepare( 'INSERT INTO studentplus_files (id, name, size) VALUES (:id, :name, :size)' );
@@ -469,7 +534,12 @@ class studentplus_service {
 				}
 				catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	        } 
-	        else echo "Failed to upload file.";
+	        else {
+	        	echo "Failed to upload file.";
+	        	echo "filename " . $filename;
+	        	echo " extension" . $extension;
+	        	echo $_FILES['new_student_cv']['error'];
+	        }
 	        return false;
 	    }
 	}

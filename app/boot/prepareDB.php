@@ -1,9 +1,13 @@
 <?php
 
 // Manualno inicijaliziramo bazu ako već nije.
-require_once '../../model/db.class.php';
+require_once 'db.class.php';
+
+echo "Nakon require db class", "<br>";
 
 $db = DB::getConnection();
+
+echo "Nakon db get connection", "<br>";
 
 
 // --------------------- STUDENTPLUS_STUDENTS ----------------------
@@ -154,6 +158,19 @@ try{
 catch( PDOException $e ) { exit( "PDO error #5: " . $e->getMessage() ); }
 
 echo "Ubacio ponude u tablicu studentplus_offers.<br />";
+
+
+try
+{
+	$st = $db->prepare( 'INSERT INTO studentplus_students (id, username, password, name, surname, email, phone, school, grades, free_time, cv) VALUES (:id, :username, :password, :name, :surname, :email, :phone, :school, :grades, :free_time, :cv )' );
+
+	$st->execute( array( 'id' => '5', 'username' => 'tihomir', 'password' => password_hash( 'tihomir', PASSWORD_DEFAULT ) , 'name' => 'tihomir', 'surname' => 'bond', 'email' => 'bond@mail.com', 'phone' => '45678', 'school' => 'spy university' , 'grades' => '4.54', 'free_time' => '7', 'cv' => '13' ) );
+
+}
+catch( PDOException $e ) { exit( "PDO error [insert studentplus_students]: " . $e->getMessage() ); }
+
+echo "Ubacio u tablicu studentplus_students.<br />";
+
 
 
 

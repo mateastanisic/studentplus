@@ -12,6 +12,10 @@ require_once __SITE_PATH . '/app/' . 'router.class.php';
 // Učitaj definiciju templatea.
 require_once __SITE_PATH . '/app/' . 'template.class.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 
 // Automatsko učitavanja klasa iz modela kad se pozove new.
 function __autoload( $class_name )
@@ -19,10 +23,15 @@ function __autoload( $class_name )
 	// Imena datoteke od klasa će biti napisana malim slovima.
 	// Npr. za klasu User će biti spremljeno u user.class.php
 	$filename = strtolower($class_name) . '.class.php';
-	$file = __SITE_PATH . '/model/' . $filename;
+	$file = __SITE_PATH .'/model/' . $filename;
+	
+	/*echo "Usli smo u file: ";
+	echo $file;
+	echo '<br>';*/
 
 	if( file_exists($file) === false )
 	{
+		echo "Jel ovo? init";
 	    return false;
 	}
 	require_once ($file);

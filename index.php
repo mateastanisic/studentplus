@@ -11,6 +11,7 @@ session_start();
 
 // Inicijaliziraj aplikaciju (učitava bazne klase, autoload klasa iz modela).
 require_once 'app/init.php';
+//require_once 'app/boot/prepareDB.php';
 
 // Stvori zajednički registry podataka u aplikaciji.
 $registry = new Registry();
