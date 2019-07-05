@@ -1,0 +1,50 @@
+Je li bolje da imamo jedan dashboard?
+	- Jer je isti prikaz ponuda za tvrtku kao i za nelogirane
+	- Jer za studenta treba ubaciti samo gumb za prijavu 
+	(Svejedno je)
+	- Moze li nelogirani korisnik pretrazivati?
+	- Ili tri dashboarda??
+		-->nadopuna
+		napravila sam sva tri, jebiga
+
+Zasto u studentController u check_button_choice nije samo $_POST[dashboard], $_POST[applications], cini se jednostavnije, a isto imamo vise buttona
+	-->nadopuna
+	Brijem da je okej ovo skroz
+
+Ja bih mozda da stavljamo neki $_SESSION[who] = {"student", "company", "notlogged"}, tako nesto za dashboard, a ne posebno $noone_loged i $student i $company
+
+Fali base_controller, samo dodati datoteku
+
+Search, gdje preusmjerim kada korisnik upise ime ponude
+	--> nadopuna
+	Dodati funkciju search_results() u controller, ne znam u koji bi se to tocno dodalo, ovisi valjda o ovom dashboardu, sa fjama iz studentplusservice get_offers_by_postring_name()  i get_offers_by_name
+
+37.linija u indexController, kaj na login "stranici" je samo forma za login, nema ispod dashboard? Tipa, da ovo samo iskoci, a da ponude ostanu?
+
+75.linija u studentController, u funkciji check_registration, provjerava se je li stavljen new_company_name i ostale stvari za tvrtku, tipfeler
+
+19.linija u studentplusservice, u funkciji get_all_offers(), kako prolazim do array $offers, neobicno mi je kako mu se dodaju novi Offer samo na $offers[], bez nekog indeksa
+
+Kako se student prijavi za praksu? Tj nakon gumba "Prijavi se za praksu", gdje proslijeđujem sa formom? 
+	--> nadopuna
+		158.linija u studentController, ne kuzim bas:
+		Je li to zamisljeno da postoji gumb "Prijavi se!" za svaku praksu s atributima: name="button" value="application_in_offer_(id ponude)"? Klikom na taj gumb student se prijavljuje za praksu s tim id-om?
+
+
+Mislim da i u studentController i companyController u funkciji check_button_choice() ne treba provjeravati za logout jer sam logout button stavila u header, tj ako je netko logiran, uvijek ce biti gore gumb za logout u posebnoj formi
+
+150.linija u studentController, jel gumb $_POST['button'] === 'applications', predstavlja li to gumb na, recimo, ime tvrtke u popisu ponuda, i kad kliknemo na ime tvrtke, pokazu se sve ponude te tvrtke?
+	-->nadopuna
+	Mislim da ne, komentar je "prikazi ponude koje je tvrtka objavila",
+	ali se preusmjerava na fju my_applications u studentControlleru, a to su studentove prijave, tak da mislim da je komentar kriv (da, krivo je kopiran iz company)
+
+Sto se tice VIEWA, cak i kad zavrsi ova sva tehnikalija, trebat ce puno dodavati stvari u paragrafe ili ako jesu, stavljati im id-eve zbog manipulacije ccs-om/javasciptom
+
+Ja ne bih radila poseban view za offer_students, to je samo popis imena studenata koji su se prijavili za neku ponudu, to bi mogao biti samo prozorcic ispod ponude s tim popisom
+	--> ima mi smisla posebno za studentov profil i za novu ponudu, ovo mi se cini nekak premalo podataka za cijelu stranicu
+	--> nadopuna
+	Ipak je okej, jer ce tamo biti i mogucnost prihvacanja/odbijanja studenata za praksu i gledanja njihovih profila 
+
+Moze li student pristupiti svom profilu? I uređivati podatke? Ili je to zamisljeno samo da tvrtka moze doci do studentovih podataka (zivotopisa itd) da pri prijavljivanju student ne mora slati podatke nego samo klikne gumb
+
+Ideja za dizajn aplikacija, da za waiting, accepted i rejected budu drugacijih boja, zuta, zelena i crvena, zato sve ima gro div-ova i id-eva i takkkkk, da olaksa dizajn

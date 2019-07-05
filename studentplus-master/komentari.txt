@@ -1,0 +1,3 @@
+Za all_offers() ja bih dodala varijablu koja pamti ne samo je li itko logiran, nego je li logiran student ili tvrtka.
+
+Jer npr. ako je student, na svakoj praksi za koju se nije vec prijavio, postojat ce gumb "Prijavi se", a za tvrtku nece.
