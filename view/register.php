@@ -24,8 +24,6 @@
 
 		<button type="submit">Registriraj se!</button><br><br>
 
-		<button type="submit" name="dashboard">Dashboard</button><br>
-
 	</form>
 </div>
 
@@ -42,8 +40,6 @@
 		Opis: <textarea name="new_company_description" rows="10" cols="20"></textarea><br><br>
 		<button type="submit">Registriraj se!</button><br><br>
 		
-		<button type="submit" name="dashboard">Dashboard</button>
-
 	</form>
 </div>
 
@@ -65,7 +61,17 @@
 				$("#reg_company").show();
 			}
 		});
-	} )
+
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '/?rt=index/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+
+	});
 </script>
 
 

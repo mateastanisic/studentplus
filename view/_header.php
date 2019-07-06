@@ -9,7 +9,7 @@
 <body>
 
 	<div id="header">
-		<h1> Student++ </h1>
+		<h1 id="naslov"> Student++ </h1>
 		<?php 
 		//ako nitko nije logiran, ponudi login i registraciju
 		if($who === false) { 

@@ -44,4 +44,17 @@
 
 </form>
 
+<script type="text/javascript">
+	$("document").ready(function() {
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '/?rt=student/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+	} )
+</script>
+
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>

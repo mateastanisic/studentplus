@@ -15,9 +15,6 @@
 		Username: <input type="text" name="username" />
 		Password: <input type="Password" name="pass" />
 		<button type="submit" name="posalji">Log in</button>
-
-		<button type="submit" name="dashboard">Dashboard</button>
-
 	</form>
 </div>
 
@@ -27,18 +24,13 @@
 		OIB: <input type="text" name="oib" />
 		Password: <input type="Password" name="pass" />
 		<button type="submit" name="posalji">Log in</button>
-		
-		<button type="submit" name="dashboard">Dashboard</button>
-
 	</form>
 </div>
 
+
 <script type="text/javascript">
-
 //Kada odaberemo jesmo li student ili tvrtka, pokazuje se forma za login za odgovarajuc odabir
-
 $("document").ready(function() {
-
 	$("#log_student").hide();
 	$("#log_company").hide();
 
@@ -47,15 +39,21 @@ $("document").ready(function() {
 			$("#log_company").hide();
 			$("#log_student").show();
 		}
-
 		else if( document.getElementById("company").checked ) {
 			$("#log_student").hide();
 			$("#log_company").show();
 		}
 	});
+	$('#header').on( "click", function() {
+		var loc1 = window.location.pathname;
+		var loc2 = {
+			url : '/?rt=index/all_offers'
+		};
+		console.log(loc1);
+		window.location.assign(loc1+loc2.url);
+	});
 } )
 </script>
-
 
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>
 

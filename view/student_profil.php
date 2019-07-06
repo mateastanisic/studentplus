@@ -1,10 +1,6 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
-
-	<button type="submit" name="button" value="dashboard">Natrag na naslovnicu</button><br>
-
-
 	<div id="div_profil">
 		<table id="table_profil">
 		<caption>Profil studenta: </caption>
@@ -29,6 +25,18 @@
 	</div>
 
 </form>
-																																																																																											
+				
+<script type="text/javascript">
+	$("document").ready(function() {
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '/?rt=company/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+	} )
+</script>																						
 
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>
