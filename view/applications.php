@@ -2,10 +2,7 @@
 
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
-
-	<button type="submit" name="button" value="dashboard">Natrag na naslovnicu</button>
-	<p>Zasto nece?</p>
-	
+	<button type="submit" name="button" value="dashboard">Natrag na naslovnicu</button>	 <br><br>
 </form>
 
 

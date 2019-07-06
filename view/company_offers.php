@@ -7,20 +7,21 @@
 
 
 	<div id="div_ponude">
+		<h2>Moje ponude za prakse: </h2> 
 		<table id="table_ponude">
-		<caption>Moje ponude za prakse: </caption>
+		<caption> </caption>
 		<?php foreach($company_offers as $i=>$ponuda) { ?>
 
 					<tr id="ponude_ <?php echo $i; ?>" >
 						<?php 
-						echo 'Praksa: ', $ponuda->name; 
-						echo 'Tvrtka: ', $ponuda->company;
-						echo 'Opis prakse: ', $ponuda->description;
-						echo 'Adresa: ', $ponuda->adress;
-						echo 'Period rada: ', $ponuda->period;
+						echo 'Praksa: ', $ponuda->name, '<br>'; 
+						echo 'Tvrtka: ', $ponuda->company, '<br>';
+						echo 'Opis prakse: ', $ponuda->description, '<br>';
+						echo 'Adresa: ', $ponuda->adress, '<br>';
+						echo 'Period rada: ', $ponuda->period, '<br>';
 						?>
 
-						<button type="submit" name="button" value="students_in_offer_<?php echo $ponuda->id ?>">Studenti prijavljeni za praksu <?php echo $ponuda->name ?> </button><br>
+						<button type="submit" name="button" value="students_in_offer_<?php echo $ponuda->id ?>">Studenti prijavljeni za praksu <?php echo $ponuda->name ?> </button><br><br>
 
 					</tr>
 					

@@ -2,17 +2,15 @@
 
 <!--STUDENT ILI TVRTKA-->
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_register_type">
-
 	<p>Želim se registrirati kao: </p>
-
 	<input type="radio" name="odabir" value="student" id="student">Student</input>
 	<input type="radio" name="odabir" value="company" id="company">Tvrtka</input>
 </form>
 
 <!--registracija forma student-->
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_register" enctype="multipart/form-data" >
-
-	<div id="reg_student">
+<div id="reg_student">
+	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_register" enctype="multipart/form-data" >
+		
 		Username: <input type="text" name="new_student_username" value="sdf" /><br>
 		Password: <input type="password" name="new_student_password" value="pass" /><br>
 		Ime: <input type="text" name="new_student_name"  value="ghbnj" /><br>
@@ -26,14 +24,15 @@
 
 		<button type="submit">Registriraj se!</button><br><br>
 
-	</div>
+		<button type="submit" name="dashboard">Dashboard</button><br>
 
-	<button type="submit" name="dashboard">Dashboard</button><br>
-</form>
+	</form>
+</div>
+
 <!--registracija forma tvrtka-->
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_register">
-																																																																																																																																																																																																																						
-	<div id="reg_company">
+<div id="reg_company">
+	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_register">
+																																																																																																																																																																																																																							
 		OIB: <input type="text" name="new_company_oib" /><br>
 		Password: <input type="password" name="new_company_password" /><br>
 		Ime: <input type="text" name="new_company_name" /><br>
@@ -41,35 +40,32 @@
 		Adresa: <input type="text" name="new_company_adress" /><br>
 		Broj telefona: <input type="text" name="new_company_phone" /><br>
 		Opis: <textarea name="new_company_description" rows="10" cols="20"></textarea><br><br>
-
 		<button type="submit">Registriraj se!</button><br><br>
-	</div>
+		
+		<button type="submit" name="dashboard">Dashboard</button>
 
-	<button type="submit" name="dashboard">Dashboard</button>
-
-</form>
+	</form>
+</div>
 
 <script type="text/javascript">
+	//Kada odaberemo jesmo li student ili tvrtka, pokazuje se forma za registraciju za odgovarajuc odabir
+	$("document").ready(function() {
 
-//Kada odaberemo jesmo li student ili tvrtka, pokazuje se forma za registraciju za odgovarajuc odabir
+		$("#reg_student").hide();
+		$("#reg_company").hide();
 
-$("document").ready(function() {
+		$('input:radio[name="odabir"]').change( function() {
+			if( document.getElementById("student").checked ) {
+				$("#reg_company").hide();
+				$("#reg_student").show();
+			}
 
-	//$("#reg_student").hide();
-	//$("#reg_company").hide();
-
-	$('input:radio[name="odabir"]').change( function() {
-		if( document.getElementById("student").checked() ) {
-			$("#reg_company").hide();
-			$("#reg_student").show();
-		}
-
-		else if( document.getElementById("company").checked() ) {
-			$("#reg_student").hide();
-			$("#reg_company").show();
-		}
-	});
-} )
+			else if( document.getElementById("company").checked ) {
+				$("#reg_student").hide();
+				$("#reg_company").show();
+			}
+		});
+	} )
 </script>
 
 

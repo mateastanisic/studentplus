@@ -1,0 +1,18 @@
+caption {
+    padding: 10px;
+    caption-side: top;
+    display: table-caption;
+  	text-align: center;
+}
+
+div {
+ 	margin: auto;
+  	width: 50%;
+  	border: 3px solid green;
+ 	padding: 10px;	
+}
+
+table {
+	border: 1px solid green;
+	text-align: center;
+}

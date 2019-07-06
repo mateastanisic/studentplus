@@ -19,10 +19,10 @@
 				echo 'Ocjene: ', $student_in_offer->grades, "<br>";
 				echo 'Slobodno vrijeme: ', $student_in_offer->free_time, "<br>";
 				?>
+				<button type="submit" name="button" value="accept_<?php echo $student_in_offer->id ?>">Prihvati <?php echo $student_in_offer->name ?> </button><br>              
+				<button type="submit" name="button" value="reject_<?php echo $student_in_offer->id ?>">Odjebi <?php echo $student_in_offer->name ?> </button><br>
 
-				<button type="submit" name="button" value="accept">Prihvati <?php echo $student_in_offer->name ?> </button><br>
-				<button type="submit" name="button" value="reject">Odjebi <?php echo $student_in_offer->name ?> </button><br>
-
+				<button type="submit" name="download" value="<?php echo $student_in_offer->cv;?>"> Skini Životopis! </button>
 			</tr>
 					
 		</table>

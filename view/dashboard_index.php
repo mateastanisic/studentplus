@@ -14,6 +14,8 @@
 
 	<table>
 		<?php
+		if( isset($message) && strlen($message) ) echo $message . ' <br> ';
+
 		foreach($offers as $i=>$ponuda) { ?>
 
 			<tr id="red_ <?php echo $i; ?>" >

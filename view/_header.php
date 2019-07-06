@@ -8,31 +8,39 @@
 </head>
 <body>
 
-<?php 
-//ako nitko nije logiran, ponudi login i registraciju
-if(!isset($_SESSION['login']) && !isset($_SESSION['checked'])) { 
-?>
-	<p id="p_header">Tražiš ili nudiš praksu?</p>
+	<div id="header">
+		<h1> Student++ </h1>
+		<?php 
+		//ako nitko nije logiran, ponudi login i registraciju
+		if($who === false) { 
+		?>
+			<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_button_choice">
+				<button id="login" type="submit" name="login">Log in!</button>
+				<button id="register" type="submit" name="register">Register!</button>
+			</form> 
 
-	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_button_choice">
-		<button id="login" type="submit" name="login">Log in!</button>
-		<button id="register" type="submit" name="register">Register!</button>
-	</form> 
+			<br><br>
 
-	<br><br>
+		<?php }
 
-<?php }
+		//ako je netko logiran, ponudi logout
+		if( $who !== false ){ 
+			if( $who === 'student' ){
+			?>
+				<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/logout">
+					<button id="logout" type="submit" name="logout">Log out student</button>
+				</form>	
+			<?php			
+			}
+			else if( $who === 'company' ){
+			?>
+				<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/logout">
+					<button id="logout" type="submit" name="logout">Log out tvrtka</button>
+				</form>
+			<?php
+			}
+			?>
+		<?php 
+		} ?>
 
-//ako je netko logiran, ponudi logout
-if (isset($_SESSION['login'])) { ?>
-
-	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/logout">
-		<button id="logout" type="submit" name="logout">Log out student</button>
-	</form>
-	
-	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/logout">
-		<button id="logout" type="submit" name="logout">Log out tvrtka</button>
-	</form>
-	<br><br>
-
-<?php } ?>
+	</div>

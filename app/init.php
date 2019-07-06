@@ -24,14 +24,9 @@ function __autoload( $class_name )
 	// Npr. za klasu User će biti spremljeno u user.class.php
 	$filename = strtolower($class_name) . '.class.php';
 	$file = __SITE_PATH .'/model/' . $filename;
-	
-	/*echo "Usli smo u file: ";
-	echo $file;
-	echo '<br>';*/
 
 	if( file_exists($file) === false )
 	{
-		echo "Jel ovo? init";
 	    return false;
 	}
 	require_once ($file);

@@ -1,7 +1,7 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
 <!-- prikazuje se ako si logiran? -->
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/search_results">
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/search_results">
 	<div id="div_search">
 		<input type="text" name="search" />
 		<button type="submit">Traži</button><br><br>
@@ -20,7 +20,9 @@
 
 		<table>
 
-		<?php foreach($offers as $i=>$ponuda) { ?>
+		<?php 
+		if( isset($message) && strlen($message) ) echo $message . ' <br> ';
+		foreach($offers as $i=>$ponuda) { ?>
 
 			<tr id="red_ <?php echo $i; ?>" >
 				<?php 
