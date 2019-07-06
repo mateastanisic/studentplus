@@ -1,14 +1,5 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
-
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
-
-	<button type="submit" name="button" value="dashboard">Natrag na naslovnicu</button>
-	<p>Zasto nece?</p>
-	
-</form>
-
-
 <div id="div_waiting">
 	<table id="table_waiting">
 	<caption>Poslani zahtjevi za prakse: </caption>
@@ -66,5 +57,17 @@
 	</table>
 </div>
 
+<script type="text/javascript">
+	$("document").ready(function() {
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '?rt=student/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+	} )
+</script>
 
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>

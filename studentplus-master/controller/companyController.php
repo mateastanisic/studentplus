@@ -10,6 +10,9 @@ class CompanyController extends BaseController{
 		unset($_SESSION['login']); 
 		unset($_SESSION['offer']);
 		unset($_SESSION['student']);
+		unset($_SESSION['student_profil']);
+
+		//ako već nije, unset
 		unset($_POST['oib']);
 		unset($_POST['password']);
 		unset($_POST['name']);
@@ -17,56 +20,60 @@ class CompanyController extends BaseController{
 		unset($_POST['phone']);
 		unset($_POST['adress']);
 		unset($_POST['description']);
-		unset($company);
-		$noone_logged = true;
-		$who_dis = 'nitko';
-		$_SESSION['who'] = 'nitko';
+
+		$who = false; //da u viewu znamo da nitko nije logiran -- ako je false, nitko nije logiran
 
 		session_unset(); 
 		session_destroy();
 
+		//prikupi sve ponude i ispiši ih na dashboard
 		$spp = new studentplus_service();
 		$offers = $spp->get_all_offers();
+		$this->registry->template->who = $who;
 		$this->registry->template->offers = $offers;
 
-		$this->registry->template->title = 'Dashboard!';
-		$this->registry->template->show('dashboard_index');
+		header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+		exit();
 	}
 
 
 	//obradi login
 	public function check_login(){
-		//kontroler za provođenje logina
 		$spp = new studentplus_service();
+		$who = false;
+		$this->registry->template->who = $who;
 
 		if(isset($_POST['oib'])){ //napisan je oib
-			//SANITIZACIJA?????
-
-			//provjeri je li oib u bazi
-			echo "oib je set";
-			if( $spp->get_company_by_oib($_POST['oib']) === null ){
-				echo "Company with oib ". $_POST['oib'] ."  is not registred.";
-
-				$this->registry->template->title = 'Dashboard!';
-				$this->registry->template->show( 'dashboard_index' );
+			
+			//sanitizacija - oib mora biti broj
+			if( !is_numeric($_POST['oib'])){
+				echo "Login failed. -- Oib is not valid number.";
+				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 				exit();
 			}
+
+			//provjeri je li oib u bazi
+			if( $spp->get_company_by_oib($_POST['oib']) === null ){
+				echo "Login failed. -- Company with oib ". $_POST['oib'] ."  is not registred.";
+				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				exit();
+			}
+
+			//oib je u bazi
 			//dohvati lozinku te tvrtke
 			$pass = $spp->get_password_by_oib( $_POST['oib'] );
 
-			//bio je password, promijenila u pass
 			if(isset( $_POST['pass'] )){
 				if( password_verify($_POST['pass'], $pass) ){
 					//lozinka je dobra
-					if (!isset($_SESSION)) {
-						session_start();
-					}
-					echo "dobar je password";
+					//if (!isset($_SESSION)) session_start(); MAKNI OVO
+
 					//zapamti ulogiranog korisnika
 					$_SESSION['login'] = $_POST['oib'];
-					$noone_logged = false;
-					$who_dis = 'company';
-					$_SESSION['who'] = 'company';
+
+					//spremi neke info o korisniku za ljepši view
+					$who = 'company';
+					$this->registry->template->who = $who;
 
 					//odi prikupi info o svim ponudama
 					$this->all_offers();
@@ -84,38 +91,37 @@ class CompanyController extends BaseController{
 
 	//obradi register
 	public function check_register(){
+		$who = false;
+		$this->registry->template->who = $who;
 
 		if( isset($_POST['new_company_oib']) && isset($_POST['new_company_password']) && isset($_POST['new_company_name']) && isset($_POST['new_company_email']) && isset($_POST['new_company_adress']) && isset($_POST['new_company_phone']) && isset($_POST['new_company_description']) ){
 
-
-			$oib = $_POST['new_company_oib'];
+			//sanitizacija
+			$oib = filter_var( $_POST['new_company_oib'], FILTER_SANITIZE_NUMBER_INT );
 			$password_hash = password_hash($_POST['new_company_password'], PASSWORD_DEFAULT);
-			$name = $_POST['new_company_name']; 
-			$email = $_POST['new_company_email'];
-			$adress = $_POST['new_company_adress'];
-			$phone = $_POST['new_company_phone'];
-			$description = $_POST['new_company_description'];
+			$name = filter_var($_POST['new_company_name'], FILTER_SANITIZE_STRING);
+			$email = filter_var($_POST['new_company_email'], FILTER_SANITIZE_EMAIL);
+			$adress = filter_var( $_POST['new_company_adress'] , FILTER_SANITIZE_STRING );
+			$phone = filter_var( $_POST['new_company_phone'], FILTER_SANITIZE_NUMBER_INT);
+			$description = filter_var($_POST['new_company_description'], FILTER_SANITIZE_STRING );
 
 			$spp = new studentplus_service();
 
 			if( $spp->get_company_by_oib($oib) !== null ){
-				echo 'Company already exists!';
+				echo 'Registration failed! -- Company already exists!';
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
 				exit();
 			}
 
 			$spp->add_company($oib, $password_hash, $name, $email, $adress, $phone, $description );
 
-			//kao da je ulogiran
-			if (!isset($_SESSION)) {
-				session_start();
-			}
+			//kao da je ulogiran MAKNI OVO
+			//if (!isset($_SESSION)) session_start();
 
 			//zapamti ulogiranog korisnika
 			$_SESSION['login'] = $_POST['new_company_oib'];
-			$noone_logged = false;
-			$who_dis = 'company';
-			$_SESSION['who'] = 'company';
+			$who = 'company';
+			$this->registry->template->who = $who;
 
 			//odi prikupi info o svim ponudama
 			$this->all_offers();
@@ -127,8 +133,8 @@ class CompanyController extends BaseController{
 
 	//provjerava na koje smo dugme stisnuli
 	public function check_button_choice(){
-
-		echo substr($_POST['button'], 0, 7);
+		$who = 'company';
+		$this->registry->template->who = $who;
 
 		if(isset($_POST['logout'])){
 			$this->logout();
@@ -136,7 +142,7 @@ class CompanyController extends BaseController{
 		}
 		if(isset($_POST['button'])){
 			if($_POST['button'] === 'dashboard'){
-				//uništi $_SESSION['offer']
+				//hoće da ga vrati na naslovnicu
 				unset($_SESSION['offer']);
 
 				$spp = new studentplus_service();
@@ -149,7 +155,7 @@ class CompanyController extends BaseController{
 				exit();
 			}
 			if($_POST['button'] === 'ours'){
-				//uništi $_SESSION['offer']
+				//hoće prikazati naše ponude
 				unset($_SESSION['offer']);
 
 				//prikaži ponude koje je tvrtka objavila
@@ -157,7 +163,7 @@ class CompanyController extends BaseController{
 				exit();
 			}
 			if($_POST['button'] === 'make_new'){
-				//uništi $_SESSION['offer']
+				//želi stvoriti novu ponudu
 				unset($_SESSION['offer']);
 
 				//prikaži formu za pravljenje nove ponude
@@ -165,54 +171,57 @@ class CompanyController extends BaseController{
 				exit();
 			}
 			if( substr($_POST['button'], 0, 18 ) === 'students_in_offer_' ){
+				//želi vidjeti prijavljene studente neke ponude
+				$_SESSION['offer'] = substr($_POST['button'], 18 );
 				//stisnuli smo na neki button da želimo vidjeti sve studente koji su se prijavili na tu ponudu
 				$this->show_students();
-
+				exit();
 			}
 			if( substr($_POST['button'], 0, 17 ) === 'student_in_offer_' ){
 				//stisnuli smo na neki button da želimo vidjeti profil studenta s nekim id-om
 				$this->show_profil();
+				exit();
 
 			}
 			if( substr($_POST['button'], 0, 7) === 'accept_'){
 				$spp = new studentplus_service();
-
 				$student_id = substr($_POST['button'], 7);
 
-				$spp->change_status( 1, $student_id, $_SESSION['offer'] );
+				$spp->change_status( '1', $student_id, $_SESSION['offer'] );
 				$this->show_students();
 			}
-			//butoooono?
 			if( substr($_POST['button'], 0, 7) === 'reject_'){
 				$spp = new studentplus_service();
-
 				$student_id = substr($_POST['button'], 7);
  
-				$spp->change_status( -1, $student_id, $_SESSION['offer'] );
+				$spp->change_status( '-1', $student_id, $_SESSION['offer'] );
 				$this->show_students();
 			}
 		}
-		if( isset($_GET['file_id']) ){
-			//downloadanje zivotopisa
-			$id = $_GET['file_id'];
+		if( isset($_POST['download']) ){
+			//ako želimo downlodati životopis
+			$id = $_POST['download'];
 
-		    $spp = new studentplus_service();
-		    $result = $spp->get_file_by_id($id);
-		    $file = mysqli_fetch_assoc($result);
+            $spp = new studentplus_service();
+            $file = $spp->get_file_by_id($id);
 
-		    $filepath = 'uploads/' . $file['name'];
+            $filepath = realpath(dirname(__FILE__) . '/..').'/uploads/' . $file['name'];
 
-			if (file_exists($filepath)) {
-		        header('Content-Description: File Transfer');
-		        header('Content-Type: application/octet-stream');
-		        header('Content-Disposition: attachment; filename=' . basename($filepath));
-		        header('Expires: 0');
-		        header('Cache-Control: must-revalidate');
-		        header('Pragma: public');
-		        header('Content-Length: ' . filesize('uploads/' . $file['name']));
-		        readfile('uploads/' . $file['name']);
-		        exit;
-		    }
+            if (file_exists($filepath)) {
+                echo 'doshao';
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($filepath));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($filepath));
+                readfile($filepath);
+
+                //za kraj ponovno prikaži studentov profil
+                $this->show_profil();
+                exit();
+            }
 		}
 
 	}
@@ -224,8 +233,11 @@ class CompanyController extends BaseController{
 
 		$offers = $spp->get_all_offers();
 		$this->registry->template->offers = $offers;
-		//unset($_SESSION['offer']);
-		//$company_logged = $spp->get_company_by_oib($_SESSION['login']); //sa ovim u viewu saznajemo je li student ili tvrtka
+		//unset($_SESSION['offer']); MAKNI OVO
+
+		//da znamo u viewu
+		$who = 'company';
+		$this->registry->template->who = $who;
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Company Dashboard!';
@@ -237,9 +249,14 @@ class CompanyController extends BaseController{
 	public function company_offers(){
 		$spp = new studentplus_service();
 
+		//da znamo u viewu
+		$who = 'company';
+		$this->registry->template->who = $who;
+
+
 		$company_offers = $spp->get_offers_by_oib( $_SESSION['login'] );
 		$this->registry->template->company_offers = $company_offers;
-		unset($_SESSION['offer']);
+		unset($_SESSION['offer']); //da je session čist 
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Company Offers!';
@@ -249,6 +266,9 @@ class CompanyController extends BaseController{
 
 	//ide poslije ispunjavanja forme za pravljenje nove ponude
 	public function check_new_offer(){
+		$who = 'company';
+		$this->registry->template->who = $who;
+
 		if( isset($_POST['dashboard']) ){
 			$this->all_offers();
 			exit();
@@ -256,21 +276,13 @@ class CompanyController extends BaseController{
 		else if( isset($_POST['new_offer_name']) && isset($_POST['new_offer_description']) && isset($_POST['new_offer_adress']) && isset($_POST['new_offer_period']) ){
 
 			$company = $_SESSION['login'];
-			$name = $_POST['new_offer_name']; 
-			$description = $_POST['new_offer_description'];
-			$adress = $_POST['new_offer_adress'];
-			$period = $_POST['new_offer_period'];
+			$name = filter_var($_POST['new_offer_name'], FILTER_SANITIZE_STRING ); 
+			$description = filter_var($_POST['new_offer_description'], FILTER_SANITIZE_STRING ); 
+			$adress = filter_var($_POST['new_offer_adress'], FILTER_SANITIZE_STRING ); 
+			$period = filter_var($_POST['new_offer_period'], FILTER_SANITIZE_STRING );
 
 			$spp = new studentplus_service();
 			$spp->add_offer($company, $name, $description, $adress, $period);
-
-			//ne kuzim zasto je ovaj offer tu
-			/*
-			$offer = $spp->get_offers_by_name($_POST['new_offer_name']);
-			echo $offer->name;
-
-			$_SESSION['offer'] = $offer->id;
-			*/
 
 			$this->all_offers();
 			exit();
@@ -281,26 +293,27 @@ class CompanyController extends BaseController{
 
 	//svi studenti koji su se prijavili na neku ponudu
 	public function show_students(){
-
-		$extract_offerid = $_SESSION['offer']; //npr students_in_offer_1 - vrati nam natrag 1
+		unset($_SESSION['student_profil']);
+		$who = 'company';
+		$this->registry->template->who = $who;
 
 		$spp = new studentplus_service();
-			//provjeri postoji li ta ponuda
-		if( $spp->get_offer_by_id($extract_offerid) === null ){
-			echo 'Id not valid.';
-			echo substr($_POST['button'], 18);
-			echo $_POST['button'];
+
+		if( $spp->get_offer_by_id($_SESSION['offer']) === null ){
+			echo 'Offer Id not valid.';
 			$this->all_offers();
 			exit();
 		}
 
-		$_SESSION['offer'] = $extract_offerid;
-		unset($_SESSION['student']);
+		//dohvati sve studente u ponudama koji su prihvaćeni/čekaju
+		$accepted_students_in_offer = $spp->get_accepted_students_in_offer($_SESSION['offer']);
+		$this->registry->template->accepted_students_in_offer = $accepted_students_in_offer;
 
-		$students_in_offer = $spp->get_students_in_offer_by_id($extract_offerid);
-		$this->registry->template->students_in_offer = $students_in_offer;
+		$pending_students_in_offer = $spp->get_pending_students_in_offer($_SESSION['offer']);
+		$this->registry->template->pending_students_in_offer = $pending_students_in_offer;
 
-		$offer = $spp->get_offer_by_id($extract_offerid);
+		//dohvati ime ponude
+		$offer = $spp->get_offer_by_id($_SESSION['offer']);
 		$this->registry->template->offer = $offer;
 
 		$this->registry->template->title = 'Offer Students!';
@@ -310,23 +323,50 @@ class CompanyController extends BaseController{
 
 	//profil studenta
 	public function show_profil(){
-		$extract_studentid = substr($_POST['button'], 17); //npr student_in_offer_1 - vrati nam natrag 1
+		$who = 'company';
+		$this->registry->template->who = $who;
+
+		if( isset($_SESSION['student_profil']) ){
+			//poslije klika na download da znamo čiji profil trebamo pokazati
+			$extract_studentid = $_SESSION['student_profil'];
+		}
+		else{
+			$extract_studentid = substr($_POST['button'], 17); //npr student_in_offer_1 - vrati nam natrag 1
+			$_SESSION['student_profil'] = $extract_studentid;	
+		}
 
 		$spp = new studentplus_service();
+		$student_in_offer = $spp->get_student_by_id($extract_studentid);
+
 		//provjeri postoji li takav student
-		if( $spp->get_student_by_id($extract_studentid) === null ){
-			echo 'Id not valid.';
+		if( $student_in_offer === null ){
+			echo 'Student Id not valid.';
 			$this->all_offers();
 			exit();
 		}
 
-
-		$student_in_offer = $spp->get_student_by_id($extract_studentid);
 		$this->registry->template->student_in_offer = $student_in_offer;
-
 		$this->registry->template->title = 'Student Profile!';
 		$this->registry->template->show('student_profil'); 
-	}
+	}	
 
+	public function search_results() {
+		$who = 'company';
+		$this->registry->template->who = $who;
+
+		$spp = new studentplus_service();
+		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
+
+		if( count($offers) === 0 ){
+			$message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
+			$offers = $spp->get_all_offers();
+		} 
+		else $message = '';
+
+		$this->registry->template->offers = $offers;
+		$this->registry->template->message = $message;
+		$this->registry->template->show( 'logdash_index_company' );
+		exit();
+	}
 }; 
 

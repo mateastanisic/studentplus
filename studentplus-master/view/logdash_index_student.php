@@ -1,7 +1,7 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
 <!-- prikazuje se ako si logiran? -->
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/search_results">
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/search_results">
 	<div id="div_search">
 		<input type="text" name="search" />
 		<button type="submit">Traži</button><br><br>
@@ -20,7 +20,9 @@
 
 		<table>
 
-		<?php foreach($offers as $i=>$ponuda) { ?>
+		<?php 
+		if( isset($message) && strlen($message) ) echo $message . ' <br> ';
+		foreach($offers as $i=>$ponuda) { ?>
 
 			<tr id="red_ <?php echo $i; ?>" >
 				<?php 
@@ -32,7 +34,8 @@
 				?>
 
 				<!-- Klikom na ovaj gumb se student prijavljuje za praksu -->
-				<button type="submit" id="prijava_<?php echo $i; ?>" name="button" value="application_in_offer_<?php echo $ponuda->id ?>">Prijavi se!</button><br><br>
+				<button type="submit" id="prijava_<?php echo $i; ?>" name="button" value="application_in_offer_<?php echo $ponuda->id ?>">Prijavi se!</button>
+				<p id="prijavljen_<?php echo $i?>" class="sakrij">Prijavljeno</p><br><br>
 			</tr>
 			
 		</table>
@@ -41,5 +44,34 @@
 	</div>
 
 </form>
+
+<script type="text/javascript">
+	$("document").ready(function() {
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '?rt=student/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+
+		$('.sakrij').hide();
+
+		var js_offers_applied = <?php echo json_encode($offers_applied) ?>;
+
+		for(let i = 0; i <= js_offers_applied.length; i++) {
+			if (js_offers_applied[i]){
+				$("#prijavljen_" + i).show();
+    			$('#prijava_' + i).hide();
+			}
+			
+  			$('#prijava_' + i).click( function(){
+    			alert('Prijava je poslana!');
+  		});
+}
+
+	} )
+</script>
 
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>

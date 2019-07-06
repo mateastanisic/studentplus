@@ -7,20 +7,24 @@ class IndexController extends BaseController
 	//samo preusmjeri na dashboard
 	public function index() {
 		unset($_SESSION['checked']);
+		$who = false;
+		$this->registry->template->who = $who;
 		//$this->registry->template->show( '404_index' );
 		header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );	
+		exit();
 	}
 
 	//dohvaća sve ponude
 	public function all_offers(){
-
-
 		$spp = new studentplus_service();
 
 		$offers = $spp->get_all_offers();
 		$this->registry->template->offers = $offers;
+
 		unset($_SESSION['offer']);
-		$noone_logged = true;
+
+		$who = false;
+		$this->registry->template->who = $who;
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Dashboard!';
@@ -29,14 +33,14 @@ class IndexController extends BaseController
 
 	//ako se stisnuo button login/register
 	public function check_button_choice(){
+		$who = false;
+		$this->registry->template->who = $who;
 		if( isset($_POST['login']) ){
-			$_SESSION["checked"] = "yes";
 			$this->registry->template->title = 'Login!';
 			$this->registry->template->show( 'login' );
 			
 		}
 		if( isset($_POST['register']) ){
-			$_SESSION["checked"] = "yes";
 			$this->registry->template->title = 'Register!';
 			$this->registry->template->show( 'register' );
 		}
@@ -44,73 +48,72 @@ class IndexController extends BaseController
 
 	//procesuiraj login
 	public function check_login_type(){
+		$who = false;
+		$this->registry->template->who = $who;
+
 		if( isset($_POST['dashboard']) ){
 			$this->all_offers();
+			exit();
 		}
 		if( isset($_POST['odabir']) ){
-
 			if ($_POST['odabir'] === 'student'){
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=student/check_login' );
 				exit();
 			}
-
 			else if( $_POST['odabir'] === 'company' ){
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=company/check_login' );
 				exit();
 			}
-		echo 'Neuspjeli login!';
-		$this->all_offers();
+
+			//inače
+			echo 'Login failed!';
+			$this->all_offers();
+			exit();
 		}
 	}
 
 	//procesuiraj register
 	public function check_register_type(){
-
-		$this->komentar = "usli u check register type index";
+		$who = false;
+		$this->registry->template->who = $who;
 
 		if( isset($_POST['dashboard']) ){
-			$this->komentar.= "tu sam";
 			$this->all_offers();
+			exit();
 		}
-
 		if( isset($_POST['odabir']) ){
-
 			if( $_POST['odabir'] === "student"){
-
-				echo "Usao u odabir student", "<br>";
-		
-				//$spp = new studentplus_service();
-				//$cv = $spp->upload_file(); //id nam vrati
-
-				echo "Nakon upload cv file", "<br>";
-
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=student/check_register' );
 				exit();
-
 			}
-
 			else if( $_POST['odabir'] === "company" ){
-				echo "odabir kompanije";
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=company/check_register' );
 				exit();
-				}
+			}
+
+			//dosli do oovdje 
+			echo 'Registration failed!';
+			$this->all_offers();
 		}
-		
-		echo 'Neuspjeli register!';
-		$this->all_offers();
 	}
 
 	public function search_results() {
+		$who = false;
+		$this->registry->template->who = $who;
 
 		$spp = new studentplus_service();
+		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
 
-		$offers = $spp->get_offers_by_name($_POST['search']);
-		//$results_podstring = $spp->get_offers_by_podstring_name();
+		if( count($offers) === 0 ){
+			$message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
+			$offers = $spp->get_all_offers();
+		} 
+		else $message = '';
 
 		$this->registry->template->offers = $offers;
-		//$this->registry->template->title = $results_podstring;
-
+		$this->registry->template->message = $message;
 		$this->registry->template->show( 'dashboard_index' );
+		exit();
 	}
 }; 
 

@@ -1,7 +1,7 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
 <!-- prikazuje se ako si logiran? -->
-<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/search_results">
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/search_results">
 	<div id="div_search">
 		<input type="text" name="search" />
 		<button type="submit">Traži</button><br><br>
@@ -20,7 +20,9 @@
 	<div id="div_prikaz_ponuda">
 
 		<table>
-		<?php foreach($offers as $i=>$ponuda) { ?>
+		<?php 
+		if( isset($message) && strlen($message) ) echo $message . ' <br> ';
+		foreach($offers as $i=>$ponuda) { ?>
 
 			<tr id="red_ <?php echo $i; ?>" >
 				<?php 
@@ -38,5 +40,18 @@
 	</div><br><br>
 
 </form>
+
+<script type="text/javascript">
+	$("document").ready(function() {
+		$('#header').on( "click", function() {
+			var loc1 = window.location.pathname;
+			var loc2 = {
+				url : '?rt=company/all_offers'
+			};
+			console.log(loc1);
+			window.location.assign(loc1+loc2.url);
+		});
+	} )
+</script>
 
 <?php require_once __SITE_PATH . '/view/_footer.php'; ?>
