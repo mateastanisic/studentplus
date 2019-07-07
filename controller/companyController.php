@@ -141,7 +141,19 @@ class CompanyController extends BaseController{
 			exit();
 		}
 		if(isset($_POST['button'])){
-		
+			if($_POST['button'] === 'dashboard'){
+				//hoće da ga vrati na naslovnicu
+				unset($_SESSION['offer']);
+
+				$spp = new studentplus_service();
+				$offers = $spp->get_all_offers();
+				$this->registry->template->offers = $offers;
+
+				//vrati se na naslovnicu
+				$this->registry->template->title = 'Company Dashboard!';
+				$this->registry->template->show( 'logdash_index_company' );
+				exit();
+			}
 			if($_POST['button'] === 'ours'){
 				//hoće prikazati naše ponude
 				unset($_SESSION['offer']);
@@ -164,12 +176,6 @@ class CompanyController extends BaseController{
 				//stisnuli smo na neki button da želimo vidjeti sve studente koji su se prijavili na tu ponudu
 				$this->show_students();
 				exit();
-			}
-			if( substr($_POST['button'], 0, 17 ) === 'student_in_offer_' ){
-				//stisnuli smo na neki button da želimo vidjeti profil studenta s nekim id-om
-				$this->show_profil();
-				exit();
-
 			}
 			if( substr($_POST['button'], 0, 7) === 'accept_'){
 				$spp = new studentplus_service();
@@ -308,36 +314,6 @@ class CompanyController extends BaseController{
 		$this->registry->template->show('offer_students');
 	}
 
-
-	//profil studenta
-	public function show_profil(){
-		$who = 'company';
-		$this->registry->template->who = $who;
-
-		if( isset($_SESSION['student_profil']) ){
-			//poslije klika na download da znamo čiji profil trebamo pokazati
-			$extract_studentid = $_SESSION['student_profil'];
-		}
-		else{
-			$extract_studentid = substr($_POST['button'], 17); //npr student_in_offer_1 - vrati nam natrag 1
-			$_SESSION['student_profil'] = $extract_studentid;	
-		}
-
-		$spp = new studentplus_service();
-		$student_in_offer = $spp->get_student_by_id($extract_studentid);
-
-		//provjeri postoji li takav student
-		if( $student_in_offer === null ){
-			echo 'Student Id not valid.';
-			$this->all_offers();
-			exit();
-		}
-
-		$this->registry->template->student_in_offer = $student_in_offer;
-		$this->registry->template->title = 'Student Profile!';
-		$this->registry->template->show('student_profil'); 
-	}	
-
 	public function search_results() {
 		$who = 'company';
 		$this->registry->template->who = $who;
@@ -346,8 +322,7 @@ class CompanyController extends BaseController{
 		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
 
 		if( count($offers) === 0 ){
-			if( strlen($_POST['search']) === 0 ) $message = "Niste unijeli ime ponude.";
-			else $message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
+			$message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
 			$offers = $spp->get_all_offers();
 		} 
 		else $message = '';
