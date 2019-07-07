@@ -289,7 +289,7 @@ class CompanyController extends BaseController{
 
 			if( $_POST['new_offer_name'] === '' || $_POST['new_offer_description'] === '' || $_POST['new_offer_adress'] === '' || $_POST['new_offer_period'] === '' ){
 				//nismo nista napisali o praksi
-				$message_not_filled = "niste popunili sva polja!";
+				$message_not_filled = "Niste popunili sva polja!";
 				$this->registry->template->message_not_filled = $message_not_filled;
 				$this->registry->template->title = 'Try again!';
 				$this->registry->template->show( 'new_offer' );

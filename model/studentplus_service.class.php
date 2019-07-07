@@ -517,7 +517,7 @@ class studentplus_service {
 					$st = $db->prepare( 'INSERT INTO studentplus_files (id, name, size) VALUES (:id, :name, :size)' );
 					$st->execute( array( 'id' => $id, 'name' => $filename, 'size' => $size) );
 
-					echo "File uploaded successfully";
+					//echo "File uploaded successfully";
 	            	return $id;
 				}
 				catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }

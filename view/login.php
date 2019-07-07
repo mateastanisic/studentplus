@@ -15,7 +15,7 @@
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_login">
 		<table>
 			<!--poruka u slucaju loseg log in - -->
-			<!-- <caption> <?php //if( isset($message_student) && strlen($message_student) ) echo $message_student; ?> <caption> -->
+			<caption> <?php if( isset($message_student) && strlen($message_student) ) echo $message_student; ?> <caption> 
 			<tr> 
 				<td class="boldaj"> Username:</td>
 				<td> <input class="nice_input_reg" type="text" name="username" /> </td>
@@ -34,7 +34,7 @@
 <div id="log_company">
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_login">
 		<table>
-		<!-- 	<caption> <?php //if( isset($message_company) && strlen($message_company) ) echo $message_company; ?> </caption> -->
+		<caption> <?php if( isset($message_company) && strlen($message_company) ) echo $message_company; ?> </caption> 
 			<tr>
 				<td class="boldaj"> OIB:  </td>
 				<td> <input class="nice_input_reg" type="text" name="oib" /> </td>
@@ -60,17 +60,17 @@ $("document").ready(function() {
 	$("#login").hide();
 	$("#register").hide();
 
-	// var log_type = "<?php //echo $login_type; ?>";
-	// console.log ( log_type );
-	// //u slucaju krivog logina, javlja poruku s greskom, ali izbrana forma ostaje otvorena
-	// if ( log_type === "student" ){
-	// 	$("#log_company").hide();
-	// 	$("#log_student").show();
-	// }
-	// if ( log_type === "company" ){
-	// 	$("#log_company").show();
-	// 	$("#log_student").hide();
-	// }
+	var log_type = "<?php echo $login_type; ?>";
+	console.log ( log_type );
+	//u slucaju krivog logina, javlja poruku s greskom, ali izbrana forma ostaje otvorena
+	if ( log_type === "student" ){
+		$("#log_company").hide();
+		$("#log_student").show();
+	}
+	if ( log_type === "company" ){
+		$("#log_company").show();
+		$("#log_student").hide();
+	}
 
 	$('input:radio[name="odabir"]').change( function() {
 		if( document.getElementById("student").checked ) {

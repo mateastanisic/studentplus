@@ -35,12 +35,15 @@ class IndexController extends BaseController
 	public function check_button_choice(){
 		$who = false;
 		$this->registry->template->who = $who;
+		$type = "nije izabrano";
 		if( isset($_POST['login']) ){
+			$this->registry->template->login_type = $type;
 			$this->registry->template->title = 'Login!';
 			$this->registry->template->show( 'login' );
 			
 		}
 		if( isset($_POST['register']) ){
+			$this->registry->template->reg_type = $type;
 			$this->registry->template->title = 'Register!';
 			$this->registry->template->show( 'register' );
 		}
