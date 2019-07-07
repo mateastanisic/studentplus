@@ -85,9 +85,29 @@ class StudentController extends BaseController{
 
 	//obradi registraciju
 	public function check_register(){
+		$spp = new studentplus_service();
+
+		$who = false;
+		$this->registry->template->who = $who;
+
+		if(!empty($_FILES['new_student_cv'])){
+			$message_not_filled = "niste priložili svoj životopis!";
+			$this->registry->template->message_not_filled = $message_not_filled;
+			$this->registry->template->title = 'Try register again!';
+			$this->registry->template->show( 'register' );
+			exit();
+		}
 
 		if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK ){
 
+			if( $_POST['new_student_username'] === '' || $_POST['new_student_password'] === '' || $_POST['new_student_name'] === '' ||  $_POST['new_student_email'] === '' || $_POST['new_student_surname'] === '' || $_POST['new_student_phone'] === '' || $_POST['new_student_school'] === '' || $_POST['new_student_grades'] === '' || $_POST['new_student_free_time'] === ''){
+				//nesto nismo unijeli
+				$message_not_filled = "niste popunili sva polja prilikom registracije za studenta!";
+				$this->registry->template->message_not_filled = $message_not_filled;
+				$this->registry->template->title = 'Try register again!';
+				$this->registry->template->show( 'register' );
+				exit();
+			}
 			//sanitiziraj
 			$username = filter_var($_POST['new_student_username'], FILTER_SANITIZE_STRING);
 			$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
@@ -99,7 +119,6 @@ class StudentController extends BaseController{
 			$grades = filter_var($_POST['new_student_grades'], FILTER_FLAG_ALLOW_FRACTION);
 			$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
 		
-			$spp = new studentplus_service();
 			$cv = $spp->upload_file(); //id nam vrati
 
 			//nije učitao file
@@ -153,6 +172,7 @@ class StudentController extends BaseController{
 
 	//koji button je stisnuo
 	public function check_button_choice(){
+		$spp = new studentplus_service();
 
 		if(isset($_POST['logout'])){
 			$this->logout();
@@ -169,8 +189,6 @@ class StudentController extends BaseController{
 			}
 			if( substr($_POST['button'], 0, 21 ) === 'application_in_offer_' ){
 				//student se želi prijaviti za neku ponudu
-
-				$spp = new studentplus_service();
 
 				$extract_offerid = substr($_POST['button'], 21);//npr application_in_offer_1 - vrati nam natrag 1
 				

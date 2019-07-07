@@ -93,10 +93,20 @@ class CompanyController extends BaseController{
 
 	//obradi register
 	public function check_register(){
+		$spp = new studentplus_service();
 		$who = false;
 		$this->registry->template->who = $who;
 
 		if( isset($_POST['new_company_oib']) && isset($_POST['new_company_password']) && isset($_POST['new_company_name']) && isset($_POST['new_company_email']) && isset($_POST['new_company_adress']) && isset($_POST['new_company_phone']) && isset($_POST['new_company_description']) ){
+
+			if( $_POST['new_company_oib'] === '' || $_POST['new_company_password'] === '' || $_POST['new_company_name'] === '' ||  $_POST['new_company_email'] === '' || $_POST['new_company_adress'] === '' || $_POST['new_company_phone'] === '' || $_POST['new_company_description'] === '' ){
+				//nesto nismo unijeli
+				$message_not_filled = "niste popunili sva polja prilikom registracije za tvrtku!";
+				$this->registry->template->message_not_filled = $message_not_filled;
+				$this->registry->template->title = 'Try again!';
+				$this->registry->template->show( 'register' );
+				exit();
+			}
 
 			//sanitizacija
 			$oib = filter_var( $_POST['new_company_oib'], FILTER_SANITIZE_NUMBER_INT );
@@ -107,8 +117,6 @@ class CompanyController extends BaseController{
 			$phone = filter_var( $_POST['new_company_phone'], FILTER_SANITIZE_NUMBER_INT);
 			$description = filter_var($_POST['new_company_description'], FILTER_SANITIZE_STRING );
 
-			$spp = new studentplus_service();
-
 			if( $spp->get_company_by_oib($oib) !== null ){
 				echo 'Registration failed! -- Company already exists!';
 				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
@@ -117,8 +125,6 @@ class CompanyController extends BaseController{
 
 			$spp->add_company($oib, $password_hash, $name, $email, $adress, $phone, $description );
 
-			//kao da je ulogiran MAKNI OVO
-			//if (!isset($_SESSION)) session_start();
 
 			//zapamti ulogiranog korisnika
 			$_SESSION['login'] = $_POST['new_company_oib'];
@@ -148,19 +154,6 @@ class CompanyController extends BaseController{
 			exit();
 		}
 		if(isset($_POST['button'])){
-			if($_POST['button'] === 'dashboard'){
-				//hoće da ga vrati na naslovnicu
-				unset($_SESSION['offer']);
-
-				
-				$offers = $spp->get_all_offers();
-				$this->registry->template->offers = $offers;
-
-				//vrati se na naslovnicu
-				$this->registry->template->title = 'Company Dashboard!';
-				$this->registry->template->show( 'logdash_index_company' );
-				exit();
-			}
 			if($_POST['button'] === 'ours'){
 				//hoće prikazati naše ponude
 				unset($_SESSION['offer']);
@@ -277,17 +270,14 @@ class CompanyController extends BaseController{
 		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
 		$this->registry->template->logedin = $logedin;
 
-		if( isset($_POST['dashboard']) ){
-			$this->all_offers();
-			exit();
-		}
-		else if( isset($_POST['new_offer_name']) && isset($_POST['new_offer_description']) && isset($_POST['new_offer_adress']) && isset($_POST['new_offer_period']) ){
+		if( isset($_POST['new_offer_name']) && isset($_POST['new_offer_description']) && isset($_POST['new_offer_adress']) && isset($_POST['new_offer_period']) ){
 
 			if( $_POST['new_offer_name'] === '' || $_POST['new_offer_description'] === '' || $_POST['new_offer_adress'] === '' || $_POST['new_offer_period'] === '' ){
 				//nismo nista napisali o praksi
 				$message_not_filled = "niste popunili sva polja!";
 				$this->registry->template->message_not_filled = $message_not_filled;
-				$this->all_offers();
+				$this->registry->template->title = 'Try again!';
+				$this->registry->template->show( 'new_offer' );
 				exit();
 			}
 			$company = $_SESSION['login'];
@@ -310,7 +300,7 @@ class CompanyController extends BaseController{
 	public function show_students(){
 		unset($_SESSION['student_profil']);
 		$spp = new studentplus_service();
-		
+
 		$who = 'company';
 		$this->registry->template->who = $who;
 		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
@@ -340,12 +330,13 @@ class CompanyController extends BaseController{
 	}
 
 	public function search_results() {
+		$spp = new studentplus_service();
+
 		$who = 'company';
 		$this->registry->template->who = $who;
 		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
 		$this->registry->template->logedin = $logedin;
 
-		$spp = new studentplus_service();
 		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
 
 		if( count($offers) === 0 ){

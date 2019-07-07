@@ -1,5 +1,7 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
-
+<div id="div_search" class="transparent_div">
+	<?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo 'Niste napravili novu ponudu jer '. $message_not_filled . ' <br> '; ?>
+</div>
 <div>
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_new_offer">
 		<table>

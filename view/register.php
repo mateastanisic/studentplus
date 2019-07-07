@@ -5,7 +5,8 @@
 	<div class="transparent_div">
 		<h3 class="boldaj">Registriraj se kao student ili tvrtka?</h3>
 		<input type="radio" name="odabir" value="student" id="student">Student</input>
-		<input type="radio" name="odabir" value="company" id="company">Tvrtka</input>
+		<input type="radio" name="odabir" value="company" id="company">Tvrtka</input> <br><br>
+		<?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo 'Niste se registrirali jer  '. $message_not_filled . ' <br> '; ?>
 	</div>
 </form>
 

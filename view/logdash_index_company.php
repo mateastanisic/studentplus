@@ -6,7 +6,6 @@
 		<input type="text" name="search" class="nice_input" placeholder="pretraži"/>
 		<button type="submit" class="search_button"> &#187; </button><br><br>
 		<?php if( isset($message) && strlen($message) ) echo $message . ' <br> '; ?>
-		<?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo 'Niste napravili novu ponudu jer '. $message_not_filled . ' <br> '; ?>
 	</div>
 </form>
 
