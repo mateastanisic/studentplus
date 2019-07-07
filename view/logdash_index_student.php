@@ -1,6 +1,6 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
-<!-- prikazuje se ako si logiran? -->
+<!-- prikazuje se ako si logiran-->
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/search_results">
 	<div id="div_search" class="transparent_div">
 		<input type="text" name="search" class="nice_input" placeholder="pretraži"/>
@@ -45,6 +45,22 @@
 			console.log(loc1);
 			window.location.assign(loc1+loc2.url);
 		});
+
+		$('.sakrij').hide();
+
+		var js_offers_applied = <?php echo json_encode($offers_applied) ?>;
+
+		for(let i = 0; i <= js_offers_applied.length; i++) {
+			if (js_offers_applied[i]){
+				$("#prijavljen_" + i).show();
+    			$('#prijava_' + i).hide();
+			}
+			
+  			$('#prijava_' + i).click( function(){
+    			alert('Prijava je poslana!');
+  			});
+		}
+
 	} )
 </script>
 

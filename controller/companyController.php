@@ -40,22 +40,28 @@ class CompanyController extends BaseController{
 	//obradi login
 	public function check_login(){
 		$spp = new studentplus_service();
+		$login = "company";
+		$login_message = "";
+
 		$who = false;
 		$this->registry->template->who = $who;
+		$this->registry->template->login_type = $login;
 
-		if(isset($_POST['oib'])){ //napisan je oib
+		if(isset($_POST['oib']) && $_POST['oib'] !== "" ){ //napisan je oib
 			
 			//sanitizacija - oib mora biti broj
 			if( !is_numeric($_POST['oib'])){
-				echo "Login failed. -- Oib is not valid number.";
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$login_message = "OIB mora biti desetoznamenkasti broj!";
+				$this->registry->template->message_company = $login_message;
+				$this->registry->template->show( 'login' );
 				exit();
 			}
 
 			//provjeri je li oib u bazi
 			if( $spp->get_company_by_oib($_POST['oib']) === null ){
-				echo "Login failed. -- Company with oib ". $_POST['oib'] ."  is not registred.";
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$login_message = "Ne postoji registrirana tvrtka s navedenim OIB-om!";
+				$this->registry->template->message_company = $login_message;
+				$this->registry->template->show( 'login' );
 				exit();
 			}
 
@@ -82,11 +88,17 @@ class CompanyController extends BaseController{
 					exit();
 				}
 				else{
-					echo "Login failed.";
-					header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+					$login_message = "Kriva lozinka!";
+					$this->registry->template->message_company = $login_message;
+					$this->registry->template->show( 'login' );
 					exit();
 				} 
 			}
+		}
+		else {
+			$login_message = "Popunite sva polja za prijavu!";
+			$this->registry->template->message_company = $login_message;
+			$this->registry->template->show( 'login' );
 		}
 	}
 
@@ -96,14 +108,16 @@ class CompanyController extends BaseController{
 		$spp = new studentplus_service();
 		$who = false;
 		$this->registry->template->who = $who;
+		$reg_type = "company";
+		$this->registry->template->reg_type = $reg_type;
+		$reg_message = "";
 
 		if( isset($_POST['new_company_oib']) && isset($_POST['new_company_password']) && isset($_POST['new_company_name']) && isset($_POST['new_company_email']) && isset($_POST['new_company_adress']) && isset($_POST['new_company_phone']) && isset($_POST['new_company_description']) ){
 
 			if( $_POST['new_company_oib'] === '' || $_POST['new_company_password'] === '' || $_POST['new_company_name'] === '' ||  $_POST['new_company_email'] === '' || $_POST['new_company_adress'] === '' || $_POST['new_company_phone'] === '' || $_POST['new_company_description'] === '' ){
 				//nesto nismo unijeli
-				$message_not_filled = "niste popunili sva polja prilikom registracije za tvrtku!";
-				$this->registry->template->message_not_filled = $message_not_filled;
-				$this->registry->template->title = 'Try again!';
+				$reg_message = "Popunite sva navedena polja!";
+				$this->registry->template->reg_message_company = $reg_message;
 				$this->registry->template->show( 'register' );
 				exit();
 			}
@@ -118,8 +132,9 @@ class CompanyController extends BaseController{
 			$description = filter_var($_POST['new_company_description'], FILTER_SANITIZE_STRING );
 
 			if( $spp->get_company_by_oib($oib) !== null ){
-				echo 'Registration failed! -- Company already exists!';
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$reg_message = "Tvrtka s navedenim oib-om je vec registrirana!";
+				$this->registry->template->reg_message_company = $reg_message;
+				$this->registry->template->show( 'register' );
 				exit();
 			}
 

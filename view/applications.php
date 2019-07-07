@@ -2,7 +2,7 @@
 
 <div id="div_waiting">
 	<h3 class="boldaj">Poslani zahtjevi za prakse: </h3> <br>
-	<?php foreach($waiting as $i=>$zahtjev) { ?>
+	<?php foreach( $waiting as $i=>$zahtjev ) { ?>
 		<table class="table_waiting"> <?php
 			echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
 			echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
@@ -16,7 +16,7 @@
 
 <div id="div_accepted">
 	<h3 class="boldaj">Prihvaćeni zahtjevi za prakse: </h3> <br>
-	<?php foreach($accepted as $i=>$zahtjev) { 
+	<?php foreach( $accepted as $i=>$zahtjev ) { 
 		?><table class="table_accepted"><?php
 			echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
 			echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
@@ -30,7 +30,7 @@
 
 <div id="div_rejected">
 	<h3 class="boldaj">Odbijeni zahtjevi za praksu: </h3> <br>
-	<?php foreach($rejected as $i=>$zahtjev) { 
+	<?php foreach( $rejected as $i=>$zahtjev ) { 
 		?><table class="table_rejected"><?php
 		echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
 		echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';

@@ -6,7 +6,6 @@
 		<h3 class="boldaj">Registriraj se kao student ili tvrtka?</h3>
 		<input type="radio" name="odabir" value="student" id="student">Student</input>
 		<input type="radio" name="odabir" value="company" id="company">Tvrtka</input> <br><br>
-		<?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo 'Niste se registrirali jer  '. $message_not_filled . ' <br> '; ?>
 	</div>
 </form>
 
@@ -14,6 +13,7 @@
 <div id="reg_student">
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_register" enctype="multipart/form-data" >
 		<table>
+<!-- 			<caption> <?php// if( isset($reg_message_student) && strlen($reg_message_student) ) echo $reg_message_student; ?> </caption> -->
 			<tr> <td class="boldaj"> Username: </td> 
 				 <td><input type="text" name="new_student_username" class="nice_input_reg" font-size="100%"/> </td>
 			</tr>
@@ -63,6 +63,8 @@
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_register">
 		
 		<table>
+		<!-- <caption> 
+			<?php //if( isset($reg_message_company) && strlen($reg_message_company) ) echo $reg_message_company; ?> <caption> -->
 			<tr>
 				<td class="boldaj"> OIB: </td>
 				<td> <input class="nice_input_reg" type="text" name="new_company_oib" /> </td>
@@ -106,6 +108,18 @@
 		$("#reg_company").hide();
 		$("#login").hide();
 		$("#register").hide();
+
+		// var reg_type = "<?php //echo $reg_type; ?>";
+		// console.log ( reg_type );
+		//u slucaju krivog logina, javlja poruku s greskom, ali izbrana forma ostaje otvorena
+		// if ( reg_type === "student" ){
+		// 	$("#reg_company").hide();
+		// 	$("#reg_student").show();
+		// }
+		// if ( reg_type === "company" ){
+		// 	$("#reg_company").show();
+		// 	$("#reg_student").hide();
+		// }
 
 		$('input:radio[name="odabir"]').change( function() {
 			if( document.getElementById("student").checked ) {

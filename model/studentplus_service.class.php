@@ -321,6 +321,22 @@ class studentplus_service {
 		return $members;
 	}
 
+	//vracamo je li student prijavljen za neku praksu
+	function is_student_applied($id_student, $id_offer){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_members WHERE id_offer=:id_offer AND id_student=:id_student' );
+
+			$st->execute( array( 'id_offer' => $id_offer, 'id_student' => $id_student ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+
+		$row = $st->fetch();
+		if( $row === false ) return false;
+		else return true;
+		
+		
+	}
 	//vraća polje svih  članova koji su podnijeli zahtjev (za koje još nismo odlučili što ćemo s njima)
 	function get_pending_students_in_offer($id_offer){
 		try{

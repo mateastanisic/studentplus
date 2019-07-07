@@ -41,16 +41,23 @@ class StudentController extends BaseController{
 	public function check_login(){
 		//kontroler za provođenje logina
 		$spp = new studentplus_service();
+		$login = "student";
+		$login_message = "";
 
-		if(isset($_POST['username'])){ //napisan je username
+		$who = false;
+		$this->registry->template->who = $who;
+		$this->registry->template->login_type = $login;
+		if( isset( $_POST['username']) && ( $_POST['username'] !== "") ){ //napisan je username
 
 			//sanitizacija
 			$username = filter_var($_POST['username'],FILTER_SANITIZE_STRING);
 
 			//provjeri je li username u bazi
 			if( $spp->get_id_by_username($username) === null ){
-				echo "Login failed. -- Student with username". $_POST['username'] ." is already registred.";
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$login_message = "Ne postoji korisnik s navedenim korisničkim imenom!";
+				//vrati na login
+				$this->registry->template->message_student = $login_message;
+				$this->registry->template->show( 'login' );
 				exit();
 			}
 
@@ -75,11 +82,18 @@ class StudentController extends BaseController{
 					exit();
 				}
 				else{
-					echo "Login failed.";
-					header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+					$login_message = "Kriva lozinka!";
+					//vrati na login
+					$this->registry->template->message_student = $login_message;
+					$this->registry->template->show( 'login' );
 					exit();
 				} 
 			}
+		}
+		else{
+			$login_message = "Popunite sva polja za prijavu!";
+			$this->registry->template->message_student = $login_message;
+			$this->registry->template->show( 'login' );
 		}
 	}
 
@@ -89,22 +103,23 @@ class StudentController extends BaseController{
 
 		$who = false;
 		$this->registry->template->who = $who;
+		$reg_type = "student";
+		$this->registry->template->reg_type = $reg_type;
+		$reg_message = "";
 
-		if(!empty($_FILES['new_student_cv'])){
-			$message_not_filled = "niste priložili svoj životopis!";
-			$this->registry->template->message_not_filled = $message_not_filled;
-			$this->registry->template->title = 'Try register again!';
+		if( !($_FILES['new_student_cv']) ){
+			$reg_message = "Niste priložili svoj životopis!";
+			$this->registry->template->reg_message_student= $reg_message;
 			$this->registry->template->show( 'register' );
 			exit();
 		}
 
-		if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] == UPLOAD_ERR_OK ){
+		if( isset($_POST['new_student_username']) && isset($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) && isset($_FILES['new_student_cv'] ) && $_FILES['new_student_cv']['error'] === UPLOAD_ERR_OK ){
 
 			if( $_POST['new_student_username'] === '' || $_POST['new_student_password'] === '' || $_POST['new_student_name'] === '' ||  $_POST['new_student_email'] === '' || $_POST['new_student_surname'] === '' || $_POST['new_student_phone'] === '' || $_POST['new_student_school'] === '' || $_POST['new_student_grades'] === '' || $_POST['new_student_free_time'] === ''){
 				//nesto nismo unijeli
-				$message_not_filled = "niste popunili sva polja prilikom registracije za studenta!";
-				$this->registry->template->message_not_filled = $message_not_filled;
-				$this->registry->template->title = 'Try register again!';
+				$reg_message = "Popunite sva navedena polja!";
+				$this->registry->template->reg_message_student = $reg_message;
 				$this->registry->template->show( 'register' );
 				exit();
 			}
@@ -123,13 +138,15 @@ class StudentController extends BaseController{
 
 			//nije učitao file
 			if( !$cv ){
-				echo 'Registration failed. File not uploaded properly!';
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$reg_message = "Greška prilikom slanja životopisa!";
+				$this->registry->template->reg_message_student = $reg_message;
+				$this->registry->template->show( 'register' );
 				exit();
 			}
 			if( $spp->get_id_by_username($username) !== null ){ //već postoji username
-				echo 'Registration failed. Username already exists!';
-				header( 'Location: ' . __SITE_URL . '/index.php?rt=index/all_offers' );
+				$reg_message = "Navedeno korisničko ime već postoji!";
+				$this->registry->template->reg_message_student = $reg_message;
+				$this->registry->template->show( 'register' );
 				exit();
 			}
 
@@ -150,6 +167,10 @@ class StudentController extends BaseController{
 			$this->all_offers();
 			exit();
 		}
+		else{
+			$this->registry->template->show( 'register' );
+			exit();
+		}
 	}
 
 	//studentov glavni dashboard
@@ -164,6 +185,15 @@ class StudentController extends BaseController{
 		$this->registry->template->who = $who;
 		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
 		$this->registry->template->logedin = $logedin;
+
+		$id_student = $spp->get_id_by_username($_SESSION['login']);
+		$offers_applied = array();
+		foreach ($offers as $i => $ponuda) {
+			$is_applied = $spp->is_student_applied($id_student, $ponuda->id);
+			$offers_applied[] = $is_applied;
+		}
+
+		$this->registry->template->offers_applied = $offers_applied;
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Student Dashboard!';
@@ -231,8 +261,8 @@ class StudentController extends BaseController{
 		$id_student = $spp->get_id_by_username($_SESSION['login']);
 
 		//dohvati podatke o prijavama
-		$waiting = $spp->get_accepted_offers_by_id($id_student);
-		$accepted = $spp->get_pending_offers_by_id($id_student);
+		$waiting = $spp->get_pending_offers_by_id($id_student);
+		$accepted = $spp->get_accepted_offers_by_id($id_student);
 		$rejected = $spp->get_rejected_offers_by_id($id_student);	
 
 		//omogući u viewu
