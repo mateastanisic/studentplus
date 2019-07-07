@@ -16,7 +16,7 @@
 		$('#header').on( "click", function() {
 			var loc1 = window.location.pathname;
 			var loc2 = {
-				url : '/?rt=company/all_offers'
+				url : '/rt=company/all_offers'
 			};
 			console.log(loc1);
 			window.location.assign(loc1+loc2.url);

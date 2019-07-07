@@ -141,19 +141,7 @@ class CompanyController extends BaseController{
 			exit();
 		}
 		if(isset($_POST['button'])){
-			if($_POST['button'] === 'dashboard'){
-				//hoće da ga vrati na naslovnicu
-				unset($_SESSION['offer']);
-
-				$spp = new studentplus_service();
-				$offers = $spp->get_all_offers();
-				$this->registry->template->offers = $offers;
-
-				//vrati se na naslovnicu
-				$this->registry->template->title = 'Company Dashboard!';
-				$this->registry->template->show( 'logdash_index_company' );
-				exit();
-			}
+		
 			if($_POST['button'] === 'ours'){
 				//hoće prikazati naše ponude
 				unset($_SESSION['offer']);
@@ -358,7 +346,8 @@ class CompanyController extends BaseController{
 		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
 
 		if( count($offers) === 0 ){
-			$message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
+			if( strlen($_POST['search']) === 0 ) $message = "Niste unijeli ime ponude.";
+			else $message = 'Ne postoje ponude koje sadrže '. $_POST['search'] . ' u svom imenu.';
 			$offers = $spp->get_all_offers();
 		} 
 		else $message = '';

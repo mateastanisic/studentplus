@@ -1,3 +1,41 @@
+/*
+klase:
+	log_reg_button
+
+
+
+id:
+	header 
+	naslov 
+
+
+
+*/
+
+
+
+/* ----------------- TAGOVI ---------------*/
+
+
+ body {
+  background-image: url(//www.toptal.com/designers/subtlepatterns/patterns/symphony.png);
+  background-position: bottom;
+  animation: 4s linear 0s infinite bp;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes bp {
+  from {
+    background-position:  198px 0;
+  }
+  
+  to {
+    background-position:  0 198px;
+  }
+}
+
+
 caption {
     padding: 10px;
     caption-side: top;
@@ -7,12 +45,98 @@ caption {
 
 div {
  	margin: auto;
-  	width: 50%;
-  	border: 3px solid green;
- 	padding: 10px;	
+  	width: 75%;
+  	border: 3px solid #40e0d0;
+ 	background-color: white;
+ 	padding: 25px 25px 25px 25px;
 }
 
 table {
 	border: 1px solid green;
-	text-align: center;
+	align: center;
 }
+
+
+
+
+
+/* ----------------- KLASE ---------------*/
+
+.log_reg_button{
+  background-color: #40e0d0; /* Turquoise */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  float: left;
+}
+
+.log_reg_button:hover {background-color: #1fc7b9}
+
+.log_reg_button:active {
+  background-color: #1fc7b9;
+  box-shadow: 0 5px #15847b;
+  transform: translateY(2px);
+}
+
+
+
+
+
+/* ----------------- ID ---------------*/
+
+#header{
+	text-align:center;
+	padding: 30px 30px 30px 30px;
+ 	margin-top: 50px;
+ 	margin-bottom: 50px;
+}
+
+@import "bourbon";
+
+#naslov {
+	margin: 50px auto;
+	text-align: center;
+	text-decoration-color: #40e0d0;
+
+    text-decoration: none;
+    @include transform(perspective(2.5em) rotateX(15deg) scaleY(0.8));
+    @include transition(all 0.5s);
+
+    display: inline-block;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 75px;
+    font-weight: 700;
+    font-family: 'Exo 2';
+    line-height: 0.8;
+
+    text-shadow: 0 -1px 15px rgba(0,0,0,0.9),
+		      0 1px 0 adjust-hue(darken(#1fc7b9, 22%), -3deg),
+			   0 3px 0 adjust-hue(darken(#1fc7b9, 21%), -3deg),
+			   0 5px 0 adjust-hue(darken(#1fc7b9, 20%), -3deg),
+			   0 7px 0 adjust-hue(darken(#1fc7b9, 19%), -3deg),
+			   0 9px 0 adjust-hue(darken(#1fc7b9, 18%), -3deg),
+				0 6px 50px transparentize(lighten(#1fc7b9, 20%), 0.2);
+}
+
+#naslov:first-line {
+  font-size: 0.8em;
+}
+
+#naslov:hover {
+  @include transform(perspective(8em) rotateX(11deg) scale(1.2));
+
+  text-shadow: 0 -1px 15px black, 0 1px 0 adjust-hue(darken(#1fc7b9, 22%), -3deg),
+			   0 2px 0 adjust-hue(darken(#1fc7b9, 21%), -3deg),
+			   0 0px 0 adjust-hue(darken(#1fc7b9, 20%), -3deg),
+			     0 1px 0 adjust-hue(darken(#1fc7b9, 19%), -3deg),
+			     0 2px 0 adjust-hue(darken(#1fc7b9, 18%), -3deg),
+				 0 2px 30px transparentize(lighten(#1fc7b9, 20%), 0.4);
+	}
+}
+

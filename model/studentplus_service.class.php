@@ -45,7 +45,8 @@ class studentplus_service {
 	function get_offers_by_podstring_name($ime){
 		$offers = $this->get_all_offers();
 		$found = array();
-
+		if( strlen($ime) === 0 ) return $found;
+		
 		for( $i = 0; $i<count($offers); $i++ ){
 			if( strpos( strtolower($offers[$i]->name), strtolower($ime) ) !== false ) $found[] = $offers[$i];
 		}

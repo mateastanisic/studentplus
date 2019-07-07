@@ -5,15 +5,13 @@
 	<caption>Poslani zahtjevi za prakse: </caption>
 	<?php foreach($waiting as $i=>$zahtjev) { ?>
 
-				<tr id="waiting_ <?php echo $i; ?>" >
-					<?php 
-					echo 'Praksa: ', $zahtjev->name; 
-					echo 'Tvrtka: ', $zahtjev->company;
-					echo 'Opis prakse: ', $zahtjev->description;
-					echo 'Adresa: ', $zahtjev->adress;
-					echo 'Period rada: ', $zahtjev->period;
-					?>
-				</tr>
+		<?php 
+		echo '<tr><td class="boldaj">Praksa:</td><td> ', $zahtjev->name, '</td></tr>'; 
+		echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
+		echo '<tr><td class="boldaj">Opis prakse: </td><td> ', $zahtjev->description, '</td></tr>';
+		echo '<tr><td class="boldaj">Adresa: </td><td> ', $zahtjev->adress, '</td></tr>';
+		echo '<tr><td class="boldaj">Period rada: </td><td> ', $zahtjev->period, '</td></tr>';
+		?>
 				
 			<?php } ?>
 	</table>
@@ -62,7 +60,7 @@
 		$('#header').on( "click", function() {
 			var loc1 = window.location.pathname;
 			var loc2 = {
-				url : '/?rt=student/all_offers'
+				url : '?rt=student/all_offers'
 			};
 			console.log(loc1);
 			window.location.assign(loc1+loc2.url);

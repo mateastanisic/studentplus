@@ -6,6 +6,10 @@
 define( '__SITE_PATH', realpath( dirname( __FILE__ ) ) );
 define( '__SITE_URL', dirname( $_SERVER['PHP_SELF'] ) );
 
+//da e možemo vratit natrag 
+ini_set('session.cache_limiter','public');
+session_cache_limiter(false);
+
 // Započnemo/nastavimo session
 session_start();
 

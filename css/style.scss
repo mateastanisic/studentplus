@@ -1,0 +1,207 @@
+/*
+klase:
+	log_reg_button
+
+
+
+id:
+	header 
+	naslov 
+
+
+
+*/
+
+
+
+/* ----------------- TAGOVI ---------------*/
+
+
+ body {
+  background-image: url(//www.toptal.com/designers/subtlepatterns/patterns/symphony.png);
+  background-position: bottom;
+  animation: 4s linear 0s infinite bp;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+@keyframes bp {
+  from {
+    background-position:  198px 0;
+  }
+  
+  to {
+    background-position:  0 198px;
+  }
+}
+
+
+caption {
+    padding: 10px;
+    caption-side: top;
+    display: table-caption;
+  	text-align: center;
+}
+
+div {
+ 	margin: auto;
+  	width: 75%;
+  	border: 3px solid #40e0d0;
+ 	background-color: white;
+ 	padding: 25px 25px 25px 25px;
+}
+
+table {
+	align: center;
+	margin: 10px 10px 10px 10px;
+	padding-top: 4%;
+	padding-bottom: 4%;
+}
+
+
+
+/* ----------------- KLASE ---------------*/
+.log_reg_button{
+  width: 150px;
+  background-color: #40e0d0; /* Turquoise */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  float:center;
+}
+
+.log_reg_button:hover {background-color: #1fc7b9}
+
+.log_reg_button:active {
+  background-color: #1fc7b9;
+  box-shadow: 0 5px #15847b;
+  transform: translateY(2px);
+}
+
+.registration_login_button{
+	margin-left:10px;
+	width: 90%;
+	background-color: #40e0d0; /* Turquoise */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	cursor: pointer;
+	float:center;
+}
+
+.registration_login_button:hover {background-color: #1fc7b9}
+
+.registration_login_button:active {
+  background-color: #1fc7b9;
+  box-shadow: 0 5px #15847b;
+  transform: translateY(2px);
+}
+
+.nice_input {
+	border: 0;
+	outline: 0;
+	border-bottom:2px solid #595959;
+	font-size:250%;
+	padding:.25em .5em .3125em;
+	color:grey;	
+	font-family: 'Rajdhani', sans-serif;
+}
+
+.nice_input_reg {
+	border: 0;
+	outline: 0;
+	border-bottom:2px solid #595959;
+	font-size:120%;
+	padding:.25em .5em .3125em;
+	color:grey;	
+	font-family: 'Rajdhani', sans-serif;
+}
+
+.search_button{
+	background-color: white; /* Turquoise */
+	border: none;
+	color: #595959;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	cursor: pointer;
+	float:center;
+	font-size: 300%;
+	border-radius: 50%;
+}
+
+.boldaj {
+	font-weight: bold;
+}
+
+.big_button{
+	width: 50%;
+	margin-left:25%;
+	background-color: #40e0d0; /* Turquoise */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	display: inline-block;
+	font-size: 16px;
+	cursor: pointer;
+	float:center;
+}
+
+.big_button:hover {background-color: #1fc7b9}
+
+.big_button:active {
+  background-color: #1fc7b9;
+  box-shadow: 0 5px #15847b;
+  transform: translateY(2px);
+}
+
+/* ----------------- ID ---------------*/
+
+#header{
+	padding: 30px 30px 50px 30px;
+ 	margin-top: 50px;
+ 	margin-bottom: 50px;	
+}
+
+
+#naslov{
+	text-align:center;
+	font-size: 450%;
+	cursor: pointer;
+ 	font-family: 'Bungee Shade', serif;
+ 	color: #595959;
+}
+
+#naslov:hover{
+	font-size: 600%;
+	font-family: 'Bungee Shade', serif;
+	color: #404040;
+}
+
+.transparent_div {
+	opacity: 0.7;
+	border: 0;
+ 	margin-top: 50px;
+ 	margin-bottom: 50px;	
+}
+
+#textarea{
+	border: 0;
+	font-size: 120%;
+	border-bottom:2px solid #595959;
+	padding:.25em .5em .3125em;
+	color:grey;	
+	font-family: 'Rajdhani', sans-serif;
+}

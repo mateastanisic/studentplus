@@ -2,28 +2,48 @@
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_login_type">
 
-	<p>Student ili tvrtka?</p><br>
+	<div class="transparent_div">
+		<h3 class="boldaj">Prijavi se kao student ili tvrtka?</h3>
 
-	<input type="radio" name="odabir" value="student" id="student">Student</input>
-	<input type="radio" name="odabir" value="company" id="company">Tvrtka</input>
+		<input type="radio" name="odabir" value="student" id="student">Student</input>
+		<input type="radio" name="odabir" value="company" id="company">Tvrtka</input>
+	</div>
 
 </form>
 
 <div id="log_student">
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_login">
+		<table>
+			<tr> 
+				<td class="boldaj"> Username:</td>
+				<td> <input class="nice_input_reg" type="text" name="username" /> </td>
+			</tr>
+			<tr> 
+				<td class="boldaj"> <br> Password: </td>
+				<td> <br> <input class="nice_input_reg" type="Password" name="pass" /></td>
+			</tr>
 
-		Username: <input type="text" name="username" />
-		Password: <input type="Password" name="pass" />
-		<button type="submit" name="posalji">Log in</button>
+		</table>
+
+		<button class="registration_login_button" type="submit" name="posalji">Log in</button>
 	</form>
 </div>
 
 <div id="log_company">
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_login">
+		<table>
+			<tr>
+				<td class="boldaj"> OIB:  </td>
+				<td> <input class="nice_input_reg" type="text" name="oib" /> </td>
+			</tr>
+			<tr>
+				<td class="boldaj"> Password:</td>
+				<td> <input class="nice_input_reg" type="Password" name="pass" /> </td>
+			</tr>
+
+		</table>
 		
-		OIB: <input type="text" name="oib" />
-		Password: <input type="Password" name="pass" />
-		<button type="submit" name="posalji">Log in</button>
+		<button class="registration_login_button"  type="submit" name="posalji">Log in</button>
 	</form>
 </div>
 
@@ -33,6 +53,8 @@
 $("document").ready(function() {
 	$("#log_student").hide();
 	$("#log_company").hide();
+	$("#login").hide();
+	$("#register").hide();
 
 	$('input:radio[name="odabir"]').change( function() {
 		if( document.getElementById("student").checked ) {
@@ -47,7 +69,7 @@ $("document").ready(function() {
 	$('#header').on( "click", function() {
 		var loc1 = window.location.pathname;
 		var loc2 = {
-			url : '/?rt=index/all_offers'
+			url : '?rt=index/all_offers'
 		};
 		console.log(loc1);
 		window.location.assign(loc1+loc2.url);
