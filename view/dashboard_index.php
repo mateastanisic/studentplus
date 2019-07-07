@@ -3,7 +3,7 @@
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/search_results">
 	<div id="div_search" class="transparent_div">
-		<input type="text" name="search" class="nice_input" placeholder="traži prakse po imenu"/>
+		<input type="text" name="search" class="nice_input" placeholder="pretraži"/>
 		<button type="submit" class="search_button"> &#187; </button><br><br>
 		<?php if( isset($message) && strlen($message) ) echo $message . ' <br> '; ?>
 	</div>
@@ -16,7 +16,7 @@
 	foreach($offers as $i=>$ponuda) { ?>
 		<table>
 			<?php 
-			echo '<tr><td class="boldaj">Praksa:</td> <td>', $ponuda->name, '</tr></td>'; 
+			echo '<caption class="boldaj">', $ponuda->name, '</caption>'; 
 			echo '<tr><td class="boldaj">Tvrtka: </td> <td>', $ponuda->company, '</tr></td>';
 			echo '<tr><td class="boldaj">Opis <br> prakse: </td> <td>', $ponuda->description, '</tr></td>';
 			echo '<tr><td class="boldaj">Adresa: </td> <td>', $ponuda->adress, '</tr></td>';

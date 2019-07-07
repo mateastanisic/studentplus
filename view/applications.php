@@ -1,58 +1,45 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
 <div id="div_waiting">
-	<table id="table_waiting">
-	<caption>Poslani zahtjevi za prakse: </caption>
+	<h3 class="boldaj">Poslani zahtjevi za prakse: </h3> <br>
 	<?php foreach($waiting as $i=>$zahtjev) { ?>
-
-		<?php 
-		echo '<tr><td class="boldaj">Praksa:</td><td> ', $zahtjev->name, '</td></tr>'; 
-		echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
-		echo '<tr><td class="boldaj">Opis prakse: </td><td> ', $zahtjev->description, '</td></tr>';
-		echo '<tr><td class="boldaj">Adresa: </td><td> ', $zahtjev->adress, '</td></tr>';
-		echo '<tr><td class="boldaj">Period rada: </td><td> ', $zahtjev->period, '</td></tr>';
+		<table class="table_waiting"> <?php
+			echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
+			echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
+			echo '<tr><td class="boldaj">Opis <br> prakse: </td><td> ', $zahtjev->description, '</td></tr>';
+			echo '<tr><td class="boldaj">Adresa: </td><td> ', $zahtjev->adress, '</td></tr>';
+			echo '<tr><td class="boldaj">Period <br> rada: </td><td> ', $zahtjev->period, '</td></tr>';
 		?>
-				
-			<?php } ?>
-	</table>
+		</table> <?php
+	} ?>
 </div>
 
 <div id="div_accepted">
-	<table id="table_accepted">
-	<caption>Prihvaćeni zahtjevi za prakse: </caption>
-	<?php foreach($accepted as $i=>$zahtjev) { ?>
-
-				<tr id="accepted_ <?php echo $i; ?>" >
-					<?php 
-					echo 'Praksa: ', $zahtjev->name; 
-					echo 'Tvrtka: ', $zahtjev->company;
-					echo 'Opis prakse: ', $zahtjev->description;
-					echo 'Adresa: ', $zahtjev->adress;
-					echo 'Period rada: ', $zahtjev->period;
-					?>
-				</tr>
-				
-			<?php } ?>
-	</table>
+	<h3 class="boldaj">Prihvaćeni zahtjevi za prakse: </h3> <br>
+	<?php foreach($accepted as $i=>$zahtjev) { 
+		?><table class="table_accepted"><?php
+			echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
+			echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
+			echo '<tr><td class="boldaj">Opis <br> prakse: </td><td> ', $zahtjev->description, '</td></tr>';
+			echo '<tr><td class="boldaj">Adresa: </td><td> ', $zahtjev->adress, '</td></tr>';
+			echo '<tr><td class="boldaj">Period <br> rada: </td><td> ', $zahtjev->period, '</td></tr>';
+		?>
+		</table> <?php
+	} ?>
 </div>
 
 <div id="div_rejected">
-	<table id="table_rejected">
-	<caption>Odbijeni zahtjevi za praksu: </caption>
-	<?php foreach($rejected as $i=>$zahtjev) { ?>
-
-				<tr id="rejected_ <?php echo $i; ?>" >
-					<?php 
-					echo 'Praksa: ', $zahtjev->name; 
-					echo 'Tvrtka: ', $zahtjev->company;
-					echo 'Opis prakse: ', $zahtjev->description;
-					echo 'Adresa: ', $zahtjev->adress;
-					echo 'Period rada: ', $zahtjev->period;
-					?>
-				</tr>
-				
-			<?php } ?>
-	</table>
+	<h3 class="boldaj">Odbijeni zahtjevi za praksu: </h3> <br>
+	<?php foreach($rejected as $i=>$zahtjev) { 
+		?><table class="table_rejected"><?php
+		echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
+		echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
+		echo '<tr><td class="boldaj">Opis <br> prakse: </td><td> ', $zahtjev->description, '</td></tr>';
+		echo '<tr><td class="boldaj">Adresa: </td><td>  ', $zahtjev->adress, '</td></tr>';
+		echo '<tr><td class="boldaj">Period <br> rada: </td><td> ', $zahtjev->period, '</td></tr>';
+		?>
+		</table> <?php
+	} ?>
 </div>
 
 <script type="text/javascript">

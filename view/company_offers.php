@@ -2,30 +2,28 @@
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
 
-	<button type="submit" name="button" value="make_new">Stvori novu ponudu</button>
+	<br>
+	
+	<button class="big_button" type="submit" name="button" value="make_new">Stvori novu ponudu</button>
 
+	<br><br><br>
 
 	<div id="div_ponude">
-		<h2>Moje ponude za prakse: </h2> 
-		<table id="table_ponude">
-		<caption> </caption>
+		<h2>Moje prakse: </h2> 
 		<?php foreach($company_offers as $i=>$ponuda) { ?>
+			<table class="ponuda">
+				<caption class="caption"> 
+					<button class="big_button" type="submit" name="button" value="students_in_offer_<?php echo $ponuda->id ?>"> Prijavljeni studenti  </button> 
+				</caption>
 
-					<tr id="ponude_ <?php echo $i; ?>" >
-						<?php 
-						echo 'Praksa: ', $ponuda->name, '<br>'; 
-						echo 'Tvrtka: ', $ponuda->company, '<br>';
-						echo 'Opis prakse: ', $ponuda->description, '<br>';
-						echo 'Adresa: ', $ponuda->adress, '<br>';
-						echo 'Period rada: ', $ponuda->period, '<br>';
-						?>
-
-						<button type="submit" name="button" value="students_in_offer_<?php echo $ponuda->id ?>">Studenti prijavljeni za praksu <?php echo $ponuda->name ?> </button><br><br>
-
-					</tr>
-					
-				<?php } ?>
-		</table>
+				<?php 
+				echo '<tr><td></td><td><h3>', $ponuda->name, '</h3></td></tr>'; 
+				echo '<tr><td class="boldaj">Opis <br> prakse: </td> <td>', $ponuda->description, '</td></tr>';
+				echo '<tr><td class="boldaj">Adresa: </td> <td>', $ponuda->adress, '</td></tr>';
+				echo '<tr><td class="boldaj">Period <br> rada: </td> <td>', $ponuda->period, '</td></tr>';
+				?>
+			</table>		
+		<?php } ?>
 	</div>
 
 </form>

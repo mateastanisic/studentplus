@@ -67,6 +67,8 @@ class StudentController extends BaseController{
 					$_SESSION['login'] = $username;
 					$who = 'student';
 					$this->registry->template->who = $who;
+					$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+					$this->registry->template->logedin = $logedin;
 
 					//odi prikupi info o svim ponudama
 					$this->all_offers();
@@ -122,6 +124,8 @@ class StudentController extends BaseController{
 			$_SESSION['login'] = $_POST['new_student_username'];
 			$who = 'student';
 			$this->registry->template->who = $who;
+			$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+			$this->registry->template->logedin = $logedin;
 
 			//odi prikupi info o svim ponudama
 			$this->all_offers();
@@ -139,6 +143,8 @@ class StudentController extends BaseController{
 
 		$who = 'student';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Student Dashboard!';
@@ -214,6 +220,8 @@ class StudentController extends BaseController{
 		//omogući u viewu
 		$who = 'student';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		$this->registry->template->accepted = $accepted;	
 		$this->registry->template->waiting = $waiting;
@@ -224,10 +232,13 @@ class StudentController extends BaseController{
 	}
 
 	public function search_results() {
+		$spp = new studentplus_service();
+
 		$who = 'student';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
-		$spp = new studentplus_service();
 		$offers = $spp->get_offers_by_podstring_name($_POST['search']);
 		
 		if( count($offers) === 0 ){

@@ -88,7 +88,7 @@
 			</tr>
 			<tr>
 				<td class="boldaj"> <br>Opis: </td>
-				<td> <br><textarea id="textarea" name="new_company_description" rows="3" cols="30"></textarea></td>
+				<td> <br><textarea class="textarea" name="new_company_description" rows="3" cols="30"></textarea></td>
 			</tr>
 		</table>
 

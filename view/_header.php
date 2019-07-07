@@ -9,7 +9,14 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
-
+	<p id="gore_skroz">
+		<?php
+		if( $who !== false ){
+			?> <span id="ispisi_ime"><?php echo $logedin; ?> </span>
+			<?php
+		}
+		?>
+	</p>
 	<div id="header">
 		<h1 id="naslov">Student++</h1> <br>
 		<?php 

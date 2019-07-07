@@ -48,7 +48,15 @@ class studentplus_service {
 		if( strlen($ime) === 0 ) return $found;
 		
 		for( $i = 0; $i<count($offers); $i++ ){
-			if( strpos( strtolower($offers[$i]->name), strtolower($ime) ) !== false ) $found[] = $offers[$i];
+			//pokušaj sa imenom ponude
+			if( strpos( strtolower($offers[$i]->name), strtolower($ime) ) !== false ){
+				$found[] = $offers[$i];
+				continue;
+			} 
+			//pokušaj sa imenom tvrtke
+			$tvrtka = $offers[$i]->company;
+			if( strpos( strtolower($tvrtka), strtolower($ime) ) !== false ) $found[] = $offers[$i];
+
 		}
 		return $found;
 	}
@@ -237,6 +245,27 @@ class studentplus_service {
 			return new Student( $row['id'], $row['username'], $row['password'], $row['name'], $row['surname'], $row['email'], $row['phone'], $row['school'], $row['grades'], $row['free_time'], $row['cv'] );
 		} 
 	}
+
+
+	//vrati studentovo ime ako znamo username
+	function get_studentname_by_username($username){
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE username=:username ORDER BY username' );
+			$st->execute( array('username' => $username ) );
+		}
+		catch( PDOException $e ) { 
+			exit( 'PDO error ' . $e->getMessage() ); 
+		}
+
+		$row = $st->fetch();
+		if( $row === false ) return null;
+		else{
+			$vrati = $row['name'] .' '.$row['surname'];
+			return $vrati;
+		} 
+	}
+
 
 	// vraća id studenta s određenim username-om
 	function get_id_by_username($username){

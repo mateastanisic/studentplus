@@ -1,18 +1,3 @@
-/*
-klase:
-	log_reg_button
-
-
-
-id:
-	header 
-	naslov 
-
-
-
-*/
-
-
 
 /* ----------------- TAGOVI ---------------*/
 
@@ -36,16 +21,17 @@ id:
   }
 }
 
-
 caption {
-    padding: 10px;
     caption-side: top;
     display: table-caption;
-  	text-align: center;
+    text-align: left;
 }
 
 div {
- 	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:2%;
+ 	margin-bottom: 2%;
   	width: 75%;
   	border: 3px solid #40e0d0;
  	background-color: white;
@@ -58,6 +44,8 @@ table {
 	padding-top: 4%;
 	padding-bottom: 4%;
 }
+
+
 
 
 
@@ -167,6 +155,44 @@ table {
   transform: translateY(2px);
 }
 
+.transparent_div {
+	opacity: 0.7;
+	border: 0;
+ 	margin-top: 50px;
+ 	margin-bottom: 50px;	
+}
+
+.textarea{
+	border: 0;
+	font-size: 120%;
+	border-bottom:2px solid #595959;
+	padding:.25em .5em .3125em;
+	color:grey;	
+	font-family: 'Rajdhani', sans-serif;
+}
+
+.ponuda {
+	width: 100%;
+}
+
+.caption{
+	caption-side: bottom;
+}
+
+.studenti{
+	padding: 10px 10px 10px 10px;
+	font-size: 150%;
+}
+
+.sakriveno{
+	padding: 10px 10px 10px 35px;
+	font-weight: bold;
+}
+
+
+
+
+
 /* ----------------- ID ---------------*/
 
 #header{
@@ -174,7 +200,6 @@ table {
  	margin-top: 50px;
  	margin-bottom: 50px;	
 }
-
 
 #naslov{
 	text-align:center;
@@ -190,18 +215,17 @@ table {
 	color: #404040;
 }
 
-.transparent_div {
-	opacity: 0.7;
-	border: 0;
- 	margin-top: 50px;
- 	margin-bottom: 50px;	
+#ispisi_ime{
+	color: grey;
+	font-style: italic;
+	font-size: 120%;
+	font-weight: bold;
 }
 
-#textarea{
-	border: 0;
-	font-size: 120%;
-	border-bottom:2px solid #595959;
-	padding:.25em .5em .3125em;
-	color:grey;	
-	font-family: 'Rajdhani', sans-serif;
+#gore_skroz{
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top:2%;
+  	width: 75%;
 }

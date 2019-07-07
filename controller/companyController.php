@@ -74,6 +74,8 @@ class CompanyController extends BaseController{
 					//spremi neke info o korisniku za ljepši view
 					$who = 'company';
 					$this->registry->template->who = $who;
+					$logedin = $spp->get_companyname_by_oib($_POST['oib']);
+					$this->registry->template->logedin = $logedin;
 
 					//odi prikupi info o svim ponudama
 					$this->all_offers();
@@ -122,6 +124,8 @@ class CompanyController extends BaseController{
 			$_SESSION['login'] = $_POST['new_company_oib'];
 			$who = 'company';
 			$this->registry->template->who = $who;
+			$logedin = $spp->get_companyname_by_oib($_POST['new_company_oib']);
+			$this->registry->template->logedin = $logedin;
 
 			//odi prikupi info o svim ponudama
 			$this->all_offers();
@@ -133,8 +137,11 @@ class CompanyController extends BaseController{
 
 	//provjerava na koje smo dugme stisnuli
 	public function check_button_choice(){
+		$spp = new studentplus_service();
 		$who = 'company';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		if(isset($_POST['logout'])){
 			$this->logout();
@@ -145,7 +152,7 @@ class CompanyController extends BaseController{
 				//hoće da ga vrati na naslovnicu
 				unset($_SESSION['offer']);
 
-				$spp = new studentplus_service();
+				
 				$offers = $spp->get_all_offers();
 				$this->registry->template->offers = $offers;
 
@@ -232,6 +239,8 @@ class CompanyController extends BaseController{
 		//da znamo u viewu
 		$who = 'company';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		//sad znaš koje su sve ponude i koji je user(sve potrebne info za obični dashboard)  -- odi na logdash_index.php
 		$this->registry->template->title = 'Company Dashboard!';
@@ -246,7 +255,8 @@ class CompanyController extends BaseController{
 		//da znamo u viewu
 		$who = 'company';
 		$this->registry->template->who = $who;
-
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		$company_offers = $spp->get_offers_by_oib( $_SESSION['login'] );
 		$this->registry->template->company_offers = $company_offers;
@@ -260,8 +270,12 @@ class CompanyController extends BaseController{
 
 	//ide poslije ispunjavanja forme za pravljenje nove ponude
 	public function check_new_offer(){
+		$spp = new studentplus_service();
+
 		$who = 'company';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		if( isset($_POST['dashboard']) ){
 			$this->all_offers();
@@ -269,6 +283,13 @@ class CompanyController extends BaseController{
 		}
 		else if( isset($_POST['new_offer_name']) && isset($_POST['new_offer_description']) && isset($_POST['new_offer_adress']) && isset($_POST['new_offer_period']) ){
 
+			if( $_POST['new_offer_name'] === '' || $_POST['new_offer_description'] === '' || $_POST['new_offer_adress'] === '' || $_POST['new_offer_period'] === '' ){
+				//nismo nista napisali o praksi
+				$message_not_filled = "niste popunili sva polja!";
+				$this->registry->template->message_not_filled = $message_not_filled;
+				$this->all_offers();
+				exit();
+			}
 			$company = $_SESSION['login'];
 			$name = filter_var($_POST['new_offer_name'], FILTER_SANITIZE_STRING ); 
 			$description = filter_var($_POST['new_offer_description'], FILTER_SANITIZE_STRING ); 
@@ -288,8 +309,12 @@ class CompanyController extends BaseController{
 	//svi studenti koji su se prijavili na neku ponudu
 	public function show_students(){
 		unset($_SESSION['student_profil']);
+		$spp = new studentplus_service();
+		
 		$who = 'company';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		$spp = new studentplus_service();
 
@@ -317,6 +342,8 @@ class CompanyController extends BaseController{
 	public function search_results() {
 		$who = 'company';
 		$this->registry->template->who = $who;
+		$logedin = $spp->get_companyname_by_oib($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
 
 		$spp = new studentplus_service();
 		$offers = $spp->get_offers_by_podstring_name($_POST['search']);

@@ -3,7 +3,7 @@
 <!-- prikazuje se ako si logiran? -->
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/search_results">
 	<div id="div_search" class="transparent_div">
-		<input type="text" name="search" class="nice_input" placeholder="traži prakse po imenu"/>
+		<input type="text" name="search" class="nice_input" placeholder="pretraži"/>
 		<button type="submit" class="search_button"> &#187; </button><br><br>
 		<?php if( isset($message) && strlen($message) ) echo $message . ' <br> '; ?>
 	</div>
@@ -12,7 +12,7 @@
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
 
 
-	<button class="big_button" type="submit" name="button" value="applications">Prikaži samo moje prijave </button><br><br>
+	<button class="big_button" type="submit" name="button" value="applications">Moje prijave </button><br><br>
 	
 
 	<div id="div_prikaz_ponuda">

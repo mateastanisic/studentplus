@@ -3,27 +3,31 @@
 <!-- prikazuje se ako si logiran? -->
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/search_results">
 	<div id="div_search" class="transparent_div">
-		<input type="text" name="search" class="nice_input" placeholder="traži prakse po imenu"/>
+		<input type="text" name="search" class="nice_input" placeholder="pretraži"/>
 		<button type="submit" class="search_button"> &#187; </button><br><br>
 		<?php if( isset($message) && strlen($message) ) echo $message . ' <br> '; ?>
+		<?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo 'Niste napravili novu ponudu jer '. $message_not_filled . ' <br> '; ?>
 	</div>
 </form>
 
-<h>Prikaz ponuda tvrtke</h><br>
+	<br>
 
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
 
-	<button type="submit" name="button" value="ours">Moje ponude</button><br><br>
+	<button class="big_button" type="submit" name="button" value="ours">Moje prakse </button><br><br>
+
 
 	<!-- Da taj gumb bude samo na stranici "Moje ponude"? -->
-	<button type="submit" name="button" value="make_new">Stvori novu ponudu</button><br>
+	<button class="big_button" type="submit" name="button" value="make_new">Ponudi novu praksu</button>
 
-	<div id="div_prikaz_ponuda">
+	<br><br><br>
+
+	<div id="div_prikaz_ponuda"> 
 		<?php 
 		foreach($offers as $i=>$ponuda) { ?>
 			<table>
 				<?php 
-				echo '<tr><td class="boldaj">Praksa:</td> <td>', $ponuda->name, '</tr></td>'; 
+				echo '<caption class="boldaj">', $ponuda->name, '</caption>'; 
 				echo '<tr><td class="boldaj">Tvrtka: </td> <td>', $ponuda->company, '</tr></td>';
 				echo '<tr><td class="boldaj">Opis <br> prakse: </td> <td>', $ponuda->description, '</tr></td>';
 				echo '<tr><td class="boldaj">Adresa: </td> <td>', $ponuda->adress, '</tr></td>';
