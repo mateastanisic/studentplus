@@ -111,7 +111,7 @@ class StudentController extends BaseController{
 			//jesu li neprazna
 			if( $_POST['new_student_username'] !== '' || $_POST['new_student_password'] !== '' || $_POST['new_student_name'] !== '' ||  $_POST['new_student_email'] !== '' || $_POST['new_student_surname'] !== '' || $_POST['new_student_phone'] !== '' || $_POST['new_student_school'] !== '' || $_POST['new_student_grades'] !== '' || $_POST['new_student_free_time'] !== ''){
 			//je li set file
-			if( !isset($_FILES['new_student_cv']) ){
+			if( isset($_FILES['new_student_cv']) ){
 				$reg_message = "Niste priložili svoj životopis!";
 				$this->registry->template->reg_message_student= $reg_message;
 				$this->registry->template->show( 'register' );
