@@ -12,7 +12,10 @@
 <form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_button_choice">
 
 
-	<button class="my_button middle_button" type="submit" name="button" value="applications">Moje prijave </button><br><br>
+	<button class="my_button button_group lijevi" type="submit" name="button" value="applications">Moje prijave </button>
+	<button class="my_button button_group" type="submit" name="button" value="update_profile"> Uredi profil </button>
+
+	<br><br><br><br>
 	
 
 	<?php 
@@ -80,7 +83,7 @@
 				$(ponuda).css("background-color", "white")
 					   .css("border", "4px solid #40e0d0");
 				var naslov = "#oboji_" + i;
-				if( !js_offers_applied[i] ) $(naslov).css("font-size","30px").css("color","#40e0d0")
+				if( !js_offers_applied[i] ) $(naslov).css("font-size","30px").css("color","#40e0d0");
 			}
 			else{
 				opened_offers[i] = false;

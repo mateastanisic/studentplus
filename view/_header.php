@@ -4,7 +4,7 @@
 	<meta charset="utf8">
 	<title>Student++</title>
 	<link rel="stylesheet" href="<?php echo __SITE_URL;?>/css/style.css">
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	 <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Just+Another+Hand|Montserrat|Rajdhani&display=swap" rel="stylesheet">    
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>

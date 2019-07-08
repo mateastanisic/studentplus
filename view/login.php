@@ -17,17 +17,17 @@
 			<!--poruka u slucaju loseg log in - -->
 			<caption> <?php if( isset($message_student) && strlen($message_student) ) echo $message_student; ?> <caption> 
 			<tr> 
-				<td class="boldaj"> Username:</td>
+				<td class="boldaj"> Korisničko ime:</td>
 				<td> <input class="nice_input_reg" type="text" name="username" /> </td>
 			</tr>
 			<tr> 
-				<td class="boldaj"> <br> Password: </td>
+				<td class="boldaj"> <br> Lozinka: </td>
 				<td> <br> <input class="nice_input_reg" type="Password" name="pass" /></td>
 			</tr>
 
 		</table>
 
-		<button class="my_button right_button" type="submit" name="posalji">Log in</button> <br><br>
+		<button class="my_button right_button" type="submit" name="posalji">Prijavi se</button> <br><br>
 	</form>
 </div>
 
@@ -40,13 +40,13 @@
 				<td> <input class="nice_input_reg" type="text" name="oib" /> </td>
 			</tr>
 			<tr>
-				<td class="boldaj"> Password:</td>
+				<td class="boldaj"> Lozinka:</td>
 				<td> <input class="nice_input_reg" type="Password" name="pass" /> </td>
 			</tr>
 
 		</table>
 		
-		<button class="my_button right_button"  type="submit" name="posalji">Log in</button> <br><br>
+		<button class="my_button right_button"  type="submit" name="posalji">Prijavi se</button> <br><br>
 	</form>
 </div>
 

@@ -14,12 +14,12 @@
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/check_register" enctype="multipart/form-data" >
 		<table>
 	<caption> <?php if( isset($reg_message_student) && strlen($reg_message_student) ) echo $reg_message_student; ?> </caption>
-			<tr> <td class="boldaj"> Username: </td> 
+			<tr> <td class="boldaj"> Korisničko ime: </td> 
 				 <td><input type="text" name="new_student_username" class="nice_input_reg" font-size="100%"/> </td>
 			</tr>
 
 			<tr>
-			<td class="boldaj">Password:</td><td>  <input class="nice_input_reg" type="password" name="new_student_password" /><br>
+			<td class="boldaj">Lozinka:</td><td>  <input class="nice_input_reg" type="password" name="new_student_password" /><br>
 			</tr>
 
 			<tr>
@@ -43,17 +43,21 @@
 			</tr>
 
 			<tr>
-			<td class="boldaj">Ocjene: </td><td> <input class="nice_input_reg" type="text" name="new_student_grades"  /></td>
+			<td class="boldaj">Prosjek ocjena: </td><td> <input class="nice_input_reg" type="text" name="new_student_grades"  /></td>
 			</tr>
 
 			<tr>
 			<td class="boldaj">Slobodno vrijeme:</td><td>  <input class="nice_input_reg" type="text" name="new_student_free_time" /></td> 
 			</tr> 
 			<tr> 
-			<td class="boldaj"><br> Životopis:</td><td> <br> <input type="file" name="new_student_cv" /></td> 
+			<td class="boldaj"><br> Životopis:</td><td> <br> 
+				<label for="file-upload" class="my_button">
+			    	<i class="fa fa-cloud-upload"></i>  Učitaj životopis
+				</label>
+				<input type="file" name="new_student_cv" id="file-upload"/> 
 			</tr>
 		</table>
-		<button type="submit" class="my_button right_button" >Registriraj se!</button><br><br>
+		<button type="submit" class="my_button right_button" >Registriraj se</button><br><br>
 
 	</form>
 </div>
@@ -70,7 +74,7 @@
 				<td> <input class="nice_input_reg" type="text" name="new_company_oib" /> </td>
 			</tr>
 			<tr>
-				<td class="boldaj"> Password:</td>
+				<td class="boldaj"> Lozinka:</td>
 				<td> <input class="nice_input_reg" type="password" name="new_company_password" /></td>
 			</tr>
 			<tr>
@@ -95,7 +99,7 @@
 			</tr>
 		</table>
 
-		<button type="submit" class="my_button right_button" >Registriraj se!</button><br><br>
+		<button type="submit" class="my_button right_button" >Registriraj se</button><br><br>
 		
 	</form>
 </div>

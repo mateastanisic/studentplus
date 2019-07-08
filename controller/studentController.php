@@ -97,10 +97,9 @@ class StudentController extends BaseController{
 		}
 	}
 
-	//obradi registraciju
+//obradi registraciju
 	public function check_register(){
 		$spp = new studentplus_service();
-
 		$who = false;
 		$this->registry->template->who = $who;
 		$reg_type = "student";
@@ -117,9 +116,7 @@ class StudentController extends BaseController{
 				$this->registry->template->show( 'register' );
 				exit();
 			}
-
 			if( $_FILES['new_student_cv']['error'] === UPLOAD_ERR_OK ){
-
 				if( $_POST['new_student_username'] === '' || $_POST['new_student_password'] === '' || $_POST['new_student_name'] === '' ||  $_POST['new_student_email'] === '' || $_POST['new_student_surname'] === '' || $_POST['new_student_phone'] === '' || $_POST['new_student_school'] === '' || $_POST['new_student_grades'] === '' || $_POST['new_student_free_time'] === ''){
 					//nesto nismo unijeli
 					$reg_message = "Popunite sva navedena polja!";
@@ -140,7 +137,6 @@ class StudentController extends BaseController{
 				$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
 			
 				$cv = $spp->upload_file(); //id nam vrati
-
 				//nije učitao file
 				if( !$cv ){
 					$reg_message = "Greška prilikom slanja životopisa!";
@@ -154,20 +150,16 @@ class StudentController extends BaseController{
 					$this->registry->template->show( 'register' );
 					exit();
 				}
-
 				//dodaj studenta u bazu
 				$spp->add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv );
-
 				//kao da je ulogiran
 				//if (!isset($_SESSION)) session_start(); MAKNI OVO
-
 				//zapamti ulogiranog korisnika
 				$_SESSION['login'] = $_POST['new_student_username'];
 				$who = 'student';
 				$this->registry->template->who = $who;
 				$logedin = $spp->get_studentname_by_username($_SESSION['login']);
 				$this->registry->template->logedin = $logedin;
-
 				//odi prikupi info o svim ponudama
 				$this->all_offers();
 				exit();
@@ -180,7 +172,6 @@ class StudentController extends BaseController{
 			$this->registry->template->show( 'register' );
 			exit();
 		}
-
 	}
 	else{
 	//neko polje je ostalo prazno
@@ -189,9 +180,7 @@ class StudentController extends BaseController{
 		$this->registry->template->show( 'register' );
 		exit();
 	}
-
 }
-
 	//studentov glavni dashboard
 	public function all_offers(){
 		$spp = new studentplus_service();
@@ -235,6 +224,17 @@ class StudentController extends BaseController{
 				unset($_SESSION['offer']);
 				$this->my_applications();
 				exit();
+			}
+			if( $_POST['button'] === 'update_profile' ){
+				$id = $spp->get_id_by_username($_SESSION['login']);
+				$student = $spp->get_student_by_id($id);
+				$this->registry->template->student = $student;
+				$who = 'student';
+				$this->registry->template->who = $who;
+				$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+				$this->registry->template->logedin = $logedin;
+				$this->registry->template->title = 'Uredi profil!';
+				$this->registry->template->show( 'update_profil' );
 			}
 			if( substr($_POST['button'], 0, 21 ) === 'application_in_offer_' ){
 				//student se želi prijaviti za neku ponudu
@@ -331,6 +331,147 @@ class StudentController extends BaseController{
 		exit();
 	}
 
+
+	public function update_profil(){
+		$spp = new studentplus_service();
+
+		$who = 'student';
+		$this->registry->template->who = $who;
+		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
+
+		//provjeri jesmo ista dodali
+		$id = $spp->get_id_by_username($_SESSION['login']);
+		$student = $spp->get_student_by_id($id);
+		$this->registry->template->student = $student;
+
+
+		if( isset($_POST['download']) ){
+			//ako želimo downlodati životopis
+			$id = $_POST['download'];
+
+            $spp = new studentplus_service();
+            $file = $spp->get_file_by_id($id);
+
+            $filepath = realpath(dirname(__FILE__) . '/..').'/uploads/' . $file['name'];
+
+            if (file_exists($filepath)) {
+                echo 'doshao';
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($filepath));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($filepath));
+                readfile($filepath);
+
+                //za kraj ponovno prikaži studentov profil
+                $this->show_profil();
+                exit();
+            }
+		}
+
+		$test = true;
+		if( isset($_POST['new_student_password']) && $_POST['new_student_password'] !== '' && !password_verify($_POST['new_student_password'], $student->password) ){
+
+			$pass = $spp->get_password_by_username( $_SESSION['login'] );
+			//$pass_hash = password_hash($student->password, PASSWORD_DEFAULT);
+			if( password_verify($_POST['old_student_password'], $pass)  ){
+				$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
+				$spp->update_student_password( $id, $password_hash );
+				$test = false;
+			}
+			else{
+				//nije dobra stara lozinka
+				$update_message_student = "Niste dobro napisali staru lozinku!";
+				$this->registry->template->update_message_student = $update_message_student;
+				$this->registry->template->show( 'update_profil' );
+				exit();				
+			}
+
+
+		}
+		if( isset($_POST['new_student_username']) && $_POST['new_student_username'] !== '' && $_POST['new_student_username'] !== $student->username ){
+			$username = filter_var($_POST['new_student_username'], FILTER_SANITIZE_STRING);
+
+			if( $spp->get_id_by_username($username) !== null ){ //već postoji username
+				$update_message_student = "Navedeno korisničko ime već postoji!";
+				$this->registry->template->update_message_student = $update_message_student;
+				$this->registry->template->show( 'update_profil' );
+				exit();
+			}
+
+			$spp->update_student_username( $id, $username );
+			$test = false;
+		}
+		if( isset($_POST['new_student_name']) && $_POST['new_student_name'] !== '' && $_POST['new_student_name'] !== $student->name ){
+			$name = filter_var($_POST['new_student_name'], FILTER_SANITIZE_STRING);
+			$spp->update_student_name( $id, $name );
+			$test = false;
+		}
+		if( isset($_POST['new_student_surname']) && $_POST['new_student_surname'] !== '' && $_POST['new_student_surname'] !== $student->surname ){
+			$surname = filter_var($_POST['new_student_surname'], FILTER_SANITIZE_STRING);
+			$spp->update_student_surname( $id, $surname );
+			$test = false;
+		}
+		if( isset($_POST['new_student_email']) && $_POST['new_student_email'] !== '' && $_POST['new_student_email'] !== $student->email ){
+			$email = filter_var($_POST['new_student_email'], FILTER_SANITIZE_EMAIL);
+			$spp->update_student_email( $id, $email );
+			$test = false;
+		}
+		if( isset($_POST['new_student_phone']) && $_POST['new_student_phone'] !== '' && $_POST['new_student_phone'] !== $student->phone ){
+			$phone = filter_var($_POST['new_student_phone'], FILTER_SANITIZE_STRING);
+			$spp->update_student_phone( $id, $phone );
+			$test = false;
+		}
+		if( isset($_POST['new_student_school']) && $_POST['new_student_school'] !== '' && $_POST['new_student_school'] !== $student->school ){
+			$school = filter_var($_POST['new_student_school'], FILTER_SANITIZE_STRING);
+			$spp->update_student_school( $id, $school );
+			$test = false;
+		}
+		if( isset($_POST['new_student_grades']) && $_POST['new_student_grades'] !== '' && $_POST['new_student_grades'] !== $student->grades ){
+			$grades = number_format((float)$_POST['new_student_grades'], 2, '.', '');
+			$grades = filter_var($grades, FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);			
+			$spp->update_student_grades( $id, $grades );
+			$test = false;
+		}
+		if( isset($_POST['new_student_free_time']) && $_POST['new_student_free_time'] !== '' && $_POST['new_student_free_time'] !== $student->free_time ){
+			$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
+			$spp->update_student_free_time( $id, $free_time );
+			$test = false;
+		}
+		if( $_FILES['new_student_cv']['error'] === UPLOAD_ERR_OK ){
+			$cv = $spp->upload_file(); //id nam vrati
+
+			//nije učitao file
+			if( $cv === false ){
+				$update_message_student = "Greška prilikom slanja životopisa!";
+				$this->registry->template->update_message_student = $update_message_student;
+				$this->registry->template->show( 'update_profil' );
+				exit();
+			}
+			$spp->update_student_cv( $id, $cv );
+			$test = false;
+		}
+
+		if( !$test ){ //ako smo ista izmjenili
+			$update_message_student = "Uspješno ste izmjenili podatke.";
+			$this->registry->template->update_message_student = $update_message_student;			
+		}
+
+
+		$student = $spp->get_student_by_id($id);
+		$this->registry->template->student = $student;
+
+		//update session
+		$_SESSION['login'] = $student->username;
+		$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+		$this->registry->template->logedin = $logedin;
+
+		$this->registry->template->show( 'update_profil' );
+		exit();
+	}
 }; 
 
 ?>

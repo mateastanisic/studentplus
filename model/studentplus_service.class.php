@@ -546,6 +546,200 @@ class studentplus_service {
 		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
 	}
 
+
+	// ---------------------  UPDATE PROFIL  -------------------------
+	function update_student_password($id, $pass){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		//pass je već hashiran
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET password=:password WHERE id=:id' );
+			$st->execute( array( 'password' => $pass, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_username($id, $username){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET username=:username WHERE id=:id' );
+			$st->execute( array( 'username' => $username, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_name($id, $name){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute(array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET name=:name WHERE id=:id' );
+			$st->execute( array( 'name' => $name, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_surname($id, $surname){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET surname=:surname WHERE id=:id' );
+			$st->execute( array( 'surname' => $surname, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_email($id, $email){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET email=:email WHERE id=:id' );
+			$st->execute( array( 'email' => $email, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_phone($id, $phone){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET phone=:phone WHERE id=:id' );
+			$st->execute( array( 'phone' => $phone, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_school($id, $school){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET school=:school WHERE id=:id' );
+			$st->execute( array( 'school' => $school, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_grades($id, $grades){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET grades=:grades WHERE id=:id' );
+			$st->execute( array( 'grades' => $grades, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_free_time($id, $free_time){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET free_time=:free_time WHERE id=:id' );
+			$st->execute( array( 'free_time' => $free_time, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+	function update_student_cv($id, $cv){
+		//provjeri postoji li takav member
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'SELECT * FROM studentplus_students WHERE id=:id');
+			$st->execute( array( 'id' => $id)  );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }
+		if( $st->rowCount() !== 1 ) throw new Exception( 'change_status :: Student with the given id  does not exist.' );
+
+		//update db
+		try{
+			$db = DB::getConnection();
+			$st = $db->prepare( 'UPDATE studentplus_students SET cv=:cv WHERE id=:id' );
+			$st->execute( array( 'cv' => $cv, 'id' => $id ) );
+		}
+		catch( PDOException $e ) { exit( 'PDO error ' . $e->getMessage() ); }		
+	}
+
+
 };
 
 ?>

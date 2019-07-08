@@ -42,7 +42,7 @@
 
 			<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
 				<tr><td><button class="cv_pending" id="<?php echo "cvp" . $i; ?>" 
-					type="submit" name="download" value="<?php echo $student->cv;?>" hidden> Skini životopis </button></td></tr>
+					type="submit" name="download" value="<?php echo $student->cv;?>" hidden> <i class="fa fa-cloud-download"></i>  Skini životopis </button></td></tr>
 			</form>
 							
 		<?php } ?>

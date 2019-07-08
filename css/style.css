@@ -1,6 +1,9 @@
 
 /* ----------------- TAGOVI ---------------*/
 
+input[type="file"] {
+    display: none;
+}
 
  body {
   background-image: url(//www.toptal.com/designers/subtlepatterns/patterns/symphony.png);
@@ -222,6 +225,13 @@ table {
   font-size: 130%;
   cursor: pointer;
 }
+
+.update{
+  text-align: center;
+  margin-top: 5%;
+}
+
+
 
 /* ----------------- ID ---------------*/
 
