@@ -50,11 +50,11 @@
 			<td class="boldaj">Slobodno vrijeme:</td><td>  <input class="nice_input_reg" type="text" name="new_student_free_time" /></td> 
 			</tr> 
 			<tr> 
-			<td class="boldaj"><br> Životopis:</td><td> <br> 
-				<label for="file-upload" class="my_button">
-			    	<i class="fa fa-cloud-upload"></i>  Učitaj životopis
+			<td class="boldaj"><br> Životopis:</td><td> <br> 			
+				<label for="file-reg" class="my_button">
+			    <i class="fa fa-cloud-upload"></i>  Učitaj životopis
 				</label>
-				<input type="file" name="new_student_cv" id="file-upload"/> 
+				<input type="file" name="new_student_cv" id="file-reg"/></td> 
 			</tr>
 		</table>
 		<button type="submit" class="my_button right_button" >Registriraj se</button><br><br>

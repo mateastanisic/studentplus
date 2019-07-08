@@ -109,77 +109,77 @@ class StudentController extends BaseController{
 		if( isset($_POST['new_student_username']) && strlen($_POST['new_student_password']) && isset($_POST['new_student_name']) && isset($_POST['new_student_email']) && isset($_POST['new_student_surname']) && isset($_POST['new_student_phone']) && isset($_POST['new_student_school']) && isset($_POST['new_student_grades']) && isset($_POST['new_student_free_time']) ) {
 			//jesu li neprazna
 			if( $_POST['new_student_username'] !== '' || $_POST['new_student_password'] !== '' || $_POST['new_student_name'] !== '' ||  $_POST['new_student_email'] !== '' || $_POST['new_student_surname'] !== '' || $_POST['new_student_phone'] !== '' || $_POST['new_student_school'] !== '' || $_POST['new_student_grades'] !== '' || $_POST['new_student_free_time'] !== ''){
-			//je li set file
-			if( isset($_FILES['new_student_cv']) ){
-				$reg_message = "Niste priložili svoj životopis!";
-				$this->registry->template->reg_message_student= $reg_message;
-				$this->registry->template->show( 'register' );
-				exit();
+				//je li set file
+				if( !isset($_FILES['new_student_cv']) || $_FILES['new_student_cv']['error'] !== UPLOAD_ERR_OK ){
+					$reg_message = "Niste priložili svoj životopis!";
+					$this->registry->template->reg_message_student= $reg_message;
+					$this->registry->template->show( 'register' );
+					exit();
+				}
+				if( $_FILES['new_student_cv']['error'] === UPLOAD_ERR_OK ){
+					if( $_POST['new_student_username'] === '' || $_POST['new_student_password'] === '' || $_POST['new_student_name'] === '' ||  $_POST['new_student_email'] === '' || $_POST['new_student_surname'] === '' || $_POST['new_student_phone'] === '' || $_POST['new_student_school'] === '' || $_POST['new_student_grades'] === '' || $_POST['new_student_free_time'] === ''){
+						//nesto nismo unijeli
+						$reg_message = "Popunite sva navedena polja!";
+						$this->registry->template->reg_message_student = $reg_message;
+						$this->registry->template->show( 'register' );
+						exit();
+					}
+					//sanitiziraj
+					$username = filter_var($_POST['new_student_username'], FILTER_SANITIZE_STRING);
+					$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
+					$name = filter_var($_POST['new_student_name'], FILTER_SANITIZE_STRING); 
+					$surname = filter_var($_POST['new_student_surname'], FILTER_SANITIZE_STRING); 
+					$email = filter_var($_POST['new_student_email'], FILTER_SANITIZE_EMAIL);
+					$phone = filter_var($_POST['new_student_phone'], FILTER_SANITIZE_STRING);
+					$school = filter_var($_POST['new_student_school'], FILTER_SANITIZE_STRING);
+					$grades = number_format((float)$_POST['new_student_grades'], 2, '.', '');
+					$grades = filter_var($grades, FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
+					$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
+				
+					$cv = $spp->upload_file(); //id nam vrati
+					//nije učitao file
+					if( !$cv ){
+						$reg_message = "Greška prilikom slanja životopisa!";
+						$this->registry->template->reg_message_student = $reg_message;
+						$this->registry->template->show( 'register' );
+						exit();
+					}
+					if( $spp->get_id_by_username($username) !== null ){ //već postoji username
+						$reg_message = "Navedeno korisničko ime već postoji!";
+						$this->registry->template->reg_message_student = $reg_message;
+						$this->registry->template->show( 'register' );
+						exit();
+					}
+					//dodaj studenta u bazu
+					$spp->add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv );
+					//kao da je ulogiran
+					//if (!isset($_SESSION)) session_start(); MAKNI OVO
+					//zapamti ulogiranog korisnika
+					$_SESSION['login'] = $_POST['new_student_username'];
+					$who = 'student';
+					$this->registry->template->who = $who;
+					$logedin = $spp->get_studentname_by_username($_SESSION['login']);
+					$this->registry->template->logedin = $logedin;
+					//odi prikupi info o svim ponudama
+					$this->all_offers();
+					exit();
+				}
 			}
-			if( $_FILES['new_student_cv']['error'] === UPLOAD_ERR_OK ){
-				if( $_POST['new_student_username'] === '' || $_POST['new_student_password'] === '' || $_POST['new_student_name'] === '' ||  $_POST['new_student_email'] === '' || $_POST['new_student_surname'] === '' || $_POST['new_student_phone'] === '' || $_POST['new_student_school'] === '' || $_POST['new_student_grades'] === '' || $_POST['new_student_free_time'] === ''){
-					//nesto nismo unijeli
-					$reg_message = "Popunite sva navedena polja!";
-					$this->registry->template->reg_message_student = $reg_message;
-					$this->registry->template->show( 'register' );
-					exit();
-				}
-				//sanitiziraj
-				$username = filter_var($_POST['new_student_username'], FILTER_SANITIZE_STRING);
-				$password_hash = password_hash($_POST['new_student_password'], PASSWORD_DEFAULT);
-				$name = filter_var($_POST['new_student_name'], FILTER_SANITIZE_STRING); 
-				$surname = filter_var($_POST['new_student_surname'], FILTER_SANITIZE_STRING); 
-				$email = filter_var($_POST['new_student_email'], FILTER_SANITIZE_EMAIL);
-				$phone = filter_var($_POST['new_student_phone'], FILTER_SANITIZE_STRING);
-				$school = filter_var($_POST['new_student_school'], FILTER_SANITIZE_STRING);
-				$grades = number_format((float)$_POST['new_student_grades'], 2, '.', '');
-				$grades = filter_var($grades, FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-				$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
-			
-				$cv = $spp->upload_file(); //id nam vrati
-				//nije učitao file
-				if( !$cv ){
-					$reg_message = "Greška prilikom slanja životopisa!";
-					$this->registry->template->reg_message_student = $reg_message;
-					$this->registry->template->show( 'register' );
-					exit();
-				}
-				if( $spp->get_id_by_username($username) !== null ){ //već postoji username
-					$reg_message = "Navedeno korisničko ime već postoji!";
-					$this->registry->template->reg_message_student = $reg_message;
-					$this->registry->template->show( 'register' );
-					exit();
-				}
-				//dodaj studenta u bazu
-				$spp->add_student($username, $password_hash, $name, $surname, $email, $phone, $school, $grades, $free_time, $cv );
-				//kao da je ulogiran
-				//if (!isset($_SESSION)) session_start(); MAKNI OVO
-				//zapamti ulogiranog korisnika
-				$_SESSION['login'] = $_POST['new_student_username'];
-				$who = 'student';
-				$this->registry->template->who = $who;
-				$logedin = $spp->get_studentname_by_username($_SESSION['login']);
-				$this->registry->template->logedin = $logedin;
-				//odi prikupi info o svim ponudama
-				$this->all_offers();
+			else{
+				//neko polje je ostalo prazno
+				$reg_message = "Popunite sva navedena polja!";
+				$this->registry->template->reg_message_student = $reg_message;			
+				$this->registry->template->show( 'register' );
 				exit();
 			}
 		}
 		else{
-			//neko polje je ostalo prazno
+		//neko polje je ostalo prazno
 			$reg_message = "Popunite sva navedena polja!";
 			$this->registry->template->reg_message_student = $reg_message;			
 			$this->registry->template->show( 'register' );
 			exit();
 		}
-	}
-	else{
-	//neko polje je ostalo prazno
-		$reg_message = "Popunite sva navedena polja!";
-		$this->registry->template->reg_message_student = $reg_message;			
-		$this->registry->template->show( 'register' );
-		exit();
-	}
 }
 	//studentov glavni dashboard
 	public function all_offers(){
