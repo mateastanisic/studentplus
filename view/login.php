@@ -27,7 +27,7 @@
 
 		</table>
 
-		<button class="registration_login_button" type="submit" name="posalji">Log in</button>
+		<button class="my_button right_button" type="submit" name="posalji">Log in</button> <br><br>
 	</form>
 </div>
 
@@ -46,7 +46,7 @@
 
 		</table>
 		
-		<button class="registration_login_button"  type="submit" name="posalji">Log in</button>
+		<button class="my_button right_button"  type="submit" name="posalji">Log in</button> <br><br>
 	</form>
 </div>
 

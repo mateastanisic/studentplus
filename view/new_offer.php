@@ -1,11 +1,16 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
+<div class="transparent_div">
+	<h2 class="boldaj" align="center"> 
+		Nova ponuda
+	</h2>
+	<p align="center"><?php if( isset($message_not_filled) && strlen($message_not_filled) ) echo$message_not_filled; ?> </p>
+</div>
+
 <div>
-	<h2> Nova ponuda </h2>
 	<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_new_offer">
 		<table>
-			<?php if( isset($message_not_filled) && strlen($message_not_filled) ) 
-			echo '<caption>'. $message_not_filled . ' </caption>'; ?>
+
 			<tr>
 				<td class="boldaj"> Unesi ime prakse:</td>
 				<td> <input class="nice_input_reg" type="text" name="new_offer_name" /> </td>
@@ -24,9 +29,10 @@
 			</tr>
 
 		</table>
-		<button class="registration_login_button" type="submit" name="stvori">Stvori novu ponudu</button>
+		<button class="my_button right_button" type="submit" name="stvori">Stvori novu ponudu</button>
 
 	</form>
+	<br><br>
 </div>
 
 <script type="text/javascript">

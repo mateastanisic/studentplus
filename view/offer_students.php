@@ -1,8 +1,14 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
 
+<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
+	<div class="transparent_div" > 
+		<h1 class="boldaj" align="center"><?php echo $offer->name; ?> </h1> 
+		<button class="unvisible_button" type="submit" name="button" value="ours">Moje prakse </button>
+		<br>
+		<button class="unvisible_button" type="submit" name="button" value="make_new">Ponudi novu praksu</button>
+	</div>
+</form>
 
-<div class="transparent_div" > <h1 class="boldaj" align="center"><?php echo $offer->name; ?> </h1> 
-</div>
 
 <!-- prvo ispisujemo studente cije su prijave jos otvorene -->
 <?php if( count($pending_students_in_offer) !== 0 ){
@@ -19,9 +25,10 @@
 				<?php echo $student->name, " ", $student->surname, "<br>"; ?>
 				</td>
 				<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
-				<td><button class="registration_login_button" type="submit" name="button" value="accept_<?php echo $student->id ?>">Prihvati </button></td>          
-				<td><button class="registration_login_button" type="submit" name="button" value="reject_<?php echo $student->id ?>">Odbij </button></td>
+					<td><button class="my_button prihvati_odbaci" type="submit" name="button" value="accept_<?php echo $student->id ?>">Prihvati </button></td>          
+					<td><button class="my_button prihvati_odbaci" type="submit" name="button" value="reject_<?php echo $student->id ?>">Odbij </button></td>
 				</form>
+				
 			</tr>
 			
 			<!-- dodatni podaci- profil studenta, po defaultu hidden -->
@@ -34,15 +41,15 @@
 			?>
 
 			<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/check_button_choice">
-			<tr><td><button class="cv_pending" id="<?php echo "cvp" . $i; ?>" 
-				type="submit" name="download" value="<?php echo $student->cv;?>" hidden> Skini životopis </button></td></tr>
+				<tr><td><button class="cv_pending" id="<?php echo "cvp" . $i; ?>" 
+					type="submit" name="download" value="<?php echo $student->cv;?>" hidden> Skini životopis </button></td></tr>
 			</form>
-									
+							
 		<?php } ?>
 		</table>
 	</div> 
 <?php } ?>
-		
+
 
 
 
@@ -104,6 +111,9 @@
 		var tra = $( ".tr_hide_a" );
 		var trp = $( ".tr_hide_p" );
 
+		ime_pending.css("cursor","pointer");
+		ime_accepted.css("cursor","pointer");
+		
 		//klikom na ime studenta prikaze se njegov profil
 		ime_pending.on( "click", function(){
 
@@ -124,7 +134,8 @@
 							     .css("display","inline-block")
 							     .css("font-size","16px")
 							     .css("cursor","pointer")
-							     .css("float","center");
+							     .css("float","center")
+							     .css("margin-left","30px");
 				otvoren_profil_p[i] = true;
 			} 
 			else { //otvoren je profil
@@ -176,7 +187,8 @@
 							     .css("display","inline-block")
 							     .css("font-size","16px")
 							     .css("cursor","pointer")
-							     .css("float","center");
+							     .css("float","center")
+							     .css("margin-left","30px");
 			}
 			else{
 				otvoren_profil_a[i] = false;

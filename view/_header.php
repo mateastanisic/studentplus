@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf8">
 	<title>Student++</title>
-	<link rel="stylesheet" href="<?php echo __SITE_URL;?>/css/style.scss">
+	<link rel="stylesheet" href="<?php echo __SITE_URL;?>/css/style.css">
 
 	 <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Just+Another+Hand|Montserrat|Rajdhani&display=swap" rel="stylesheet">    
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -24,8 +24,8 @@
 		if($who === false) { 
 		?>	
 			<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=index/check_button_choice" >
-				<button id="login" type="submit" name="login" class="log_reg_button" >Prijava</button>
-				<button id="register" type="submit" name="register" class="log_reg_button">Registracija</button>
+				<button id="login" type="submit" name="login" class="my_button button_group lijevi" >Prijava</button>
+				<button id="register" type="submit" name="register" class="my_button button_group" >Registracija</button>
 			</form> 
 			<br><br>
 
@@ -36,14 +36,14 @@
 			if( $who === 'student' ){
 			?>
 				<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=student/logout">
-					<button id="logout" type="submit" name="logout" class="log_reg_button">Odjava</button>
+					<button id="logout" type="submit" name="logout" class="my_button middle_button">Odjava</button>
 				</form>	
 			<?php			
 			}
 			else if( $who === 'company' ){
 			?>
 				<form method="post" action="<?php echo __SITE_URL; ?>/index.php?rt=company/logout">
-					<button id="logout" type="submit" name="logout" class="log_reg_button">Odjava</button>
+					<button id="logout" type="submit" name="logout" class="my_button middle_button">Odjava</button>
 				</form>
 				<br><br>
 			<?php
@@ -54,7 +54,7 @@
 
 	</div>
 
-	<script type="text/javascript">
+<!-- 	<script type="text/javascript">
 		$("document").ready(function() {
 			var v = window.innerWidth;
 			v *= 0.75;
@@ -75,3 +75,4 @@
 			
 		} )
 	</script>
+ -->

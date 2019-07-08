@@ -111,7 +111,7 @@ class StudentController extends BaseController{
 			//jesu li neprazna
 			if( $_POST['new_student_username'] !== '' || $_POST['new_student_password'] !== '' || $_POST['new_student_name'] !== '' ||  $_POST['new_student_email'] !== '' || $_POST['new_student_surname'] !== '' || $_POST['new_student_phone'] !== '' || $_POST['new_student_school'] !== '' || $_POST['new_student_grades'] !== '' || $_POST['new_student_free_time'] !== ''){
 			//je li set file
-			if( isset($_FILES['new_student_cv']) ){
+			if( !isset($_FILES['new_student_cv']) ){
 				$reg_message = "Niste priložili svoj životopis!";
 				$this->registry->template->reg_message_student= $reg_message;
 				$this->registry->template->show( 'register' );
@@ -135,7 +135,8 @@ class StudentController extends BaseController{
 				$email = filter_var($_POST['new_student_email'], FILTER_SANITIZE_EMAIL);
 				$phone = filter_var($_POST['new_student_phone'], FILTER_SANITIZE_STRING);
 				$school = filter_var($_POST['new_student_school'], FILTER_SANITIZE_STRING);
-				$grades = filter_var($_POST['new_student_grades'], FILTER_FLAG_ALLOW_FRACTION);
+				$grades = number_format((float)$_POST['new_student_grades'], 2, '.', '');
+				$grades = filter_var($grades, FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
 				$free_time = filter_var($_POST['new_student_free_time'], FILTER_SANITIZE_NUMBER_INT);
 			
 				$cv = $spp->upload_file(); //id nam vrati
@@ -315,6 +316,16 @@ class StudentController extends BaseController{
 		else $message = '';
 
 		$this->registry->template->offers = $offers;
+
+
+		$id_student = $spp->get_id_by_username($_SESSION['login']);
+		$offers_applied = array();
+		foreach ($offers as $i => $ponuda) {
+			$is_applied = $spp->is_student_applied($id_student, $ponuda->id);
+			$offers_applied[] = $is_applied;
+		}
+		$this->registry->template->offers_applied = $offers_applied;
+		
 		$this->registry->template->message = $message;
 		$this->registry->template->show( 'logdash_index_student' );
 		exit();

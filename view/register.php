@@ -53,7 +53,7 @@
 			<td class="boldaj"><br> Životopis:</td><td> <br> <input type="file" name="new_student_cv" /></td> 
 			</tr>
 		</table>
-		<button type="submit" class="registration_login_button" >Registriraj se!</button><br><br>
+		<button type="submit" class="my_button right_button" >Registriraj se!</button><br><br>
 
 	</form>
 </div>
@@ -91,11 +91,11 @@
 			</tr>
 			<tr>
 				<td class="boldaj"> <br>Opis: </td>
-				<td> <br><textarea class="textarea" name="new_company_description" rows="3" cols="30"></textarea></td>
+				<td> <br><textarea class="textarea" name="new_company_description" rows="3" cols="20"></textarea></td>
 			</tr>
 		</table>
 
-		<button type="submit" class="registration_login_button" >Registriraj se!</button><br><br>
+		<button type="submit" class="my_button right_button" >Registriraj se!</button><br><br>
 		
 	</form>
 </div>

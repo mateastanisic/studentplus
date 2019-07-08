@@ -1,4 +1,7 @@
 <?php require_once __SITE_PATH . '/view/_header.php'; ?>
+<div class="transparent_div">
+	<h2 align="center"> Moje prijave </h2>
+</div>
 
 <div id="div_waiting">
 	<h3 class="boldaj">Poslani zahtjevi za prakse: </h3> <br>
@@ -28,10 +31,10 @@
 	} ?>
 </div>
 
-<div id="div_rejected">
-	<h3 class="boldaj">Odbijeni zahtjevi za praksu: </h3> <br>
+<div id="div_rejected" class="odbijeni">
+	<h3 class="boldaj" >Odbijeni zahtjevi za praksu: </h3> <br>
 	<?php foreach( $rejected as $i=>$zahtjev ) { 
-		?><table class="table_rejected"><?php
+		?><table class="table_rejected" ><?php
 		echo '<caption class="boldaj">', $zahtjev->name, '</caption>'; 
 		echo '<tr><td class="boldaj">Tvrtka: </td><td> ', $zahtjev->company, '</td></tr>';
 		echo '<tr><td class="boldaj">Opis <br> prakse: </td><td> ', $zahtjev->description, '</td></tr>';
