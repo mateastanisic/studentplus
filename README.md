@@ -1,5 +1,8 @@
 # studentplus
 link na prezentaciju: https://pmfhr-my.sharepoint.com/:p:/g/personal/stmatea_math_pmf_hr/EYrs7sr_wYRDt2Mr1vrueUMBB9sobRuDPB5jGwuQKNnn5Q?e=wWaYbV
+
+
+
 PORTAL ZA STUDENSKU PRAKSU -- 
 
 Tvrtke mogu zatražiti korisnički račun i oglasiti da traže studente za studentsku praksu. 
